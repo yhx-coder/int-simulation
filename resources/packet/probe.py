@@ -1,0 +1,43 @@
+
+# -*- coding: utf-8 -*-
+# @author: ming
+# @date: 2022/5/19 20:38
+from scapy.fields import BitField, IntField, StrField
+from scapy.layers.l2 import Ether
+from scapy.packet import Packet, bind_layers
+
+TYPE_PROBE = 0x102
+
+
+class SrcRoute(Packet):
+    fields_desc = [BitField(name="bos", default=0, size=1),
+                   BitField(name="port", default=0, size=7)]
+
+
+class IntData(Packet):
+    fields_desc = [BitField(name="switch_id", default=0, size=11),
+                   BitField(name="ingress_port", default=0, size=9),
+                   BitField(name="egress_port", default=0, size=9),
+                   BitField(name="hop_latency", default=0, size=48),
+                   BitField(name="deq_qdepth", default=0, size=19),
+                   IntField(name="deq_timedelta", default=0),
+                   IntField(name="byte_cnt", default=0),
+                   BitField(name="last_time", default=0, size=48),
+                   BitField(name="cur_time", default=0, size=48)]
+
+
+bind_layers(Ether, SrcRoute, type=TYPE_PROBE)
+bind_layers(Ether, IntData, type=TYPE_PROBE)
+bind_layers(SrcRoute, SrcRoute, bos=0)
+bind_layers(SrcRoute, IntData, bos=1)
+bind_layers(IntData, IntData)
+
+
+def genProbe(portList):
+    probe = Ether(dst="FF:FF:FF:FF:FF:FF", type=TYPE_PROBE)
+    i = 0
+    for port in portList:
+        probe = probe / SrcRoute(bos=0, port=port)
+        i = i + 1
+    probe.getlayer(SrcRoute, i).bos = 1
+    return probe
