@@ -12,9 +12,7 @@ https://github.com/p4lang/tutorials/
 
 https://github.com/graytower/INT_PATH
 
-在控制器写流表时使用了：
-
-https://github.com/nsg-ethz/p4-utils 中的 `thrift_API.py`。其实不用也可以，像p4lang/tutorials/utils/mininet/appcontroller.py 中开子进程，用原生的 runtim_cli 直接写入也可。但就是想偷懒，毕竟人家封装的简单嘛。
+在控制器写流表时使用了：https://github.com/nsg-ethz/p4-utils 中的 `thrift_API.py`。其实不用也可以，像p4lang/tutorials/utils/mininet/appcontroller.py 中开子进程，用原生的 runtim_cli 直接写入也可。但就是想偷懒，毕竟人家封装的简单嘛。
 
 目前未完成： java 调用接口，mininet 主机与实际主机通信。
 
