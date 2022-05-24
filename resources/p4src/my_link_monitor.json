@@ -303,7 +303,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 265,
+        "line" : 264,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
@@ -318,7 +318,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 184,
+        "line" : 183,
         "column" : 26,
         "source_fragment" : "byte_cnt_reg"
       },
@@ -330,7 +330,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 186,
+        "line" : 185,
         "column" : 25,
         "source_fragment" : "last_time_reg"
       },
@@ -344,7 +344,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 243,
+        "line" : 242,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
@@ -615,38 +615,6 @@
           }
         },
         {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["standard_metadata", "egress_port"]
-            },
-            {
-              "type" : "expression",
-              "value" : {
-                "type" : "expression",
-                "value" : {
-                  "op" : "&",
-                  "left" : {
-                    "type" : "field",
-                    "value" : ["srcRoutes[0]", "port"]
-                  },
-                  "right" : {
-                    "type" : "hexstr",
-                    "value" : "0x01ff"
-                  }
-                }
-              }
-            }
-          ],
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 137,
-            "column" : 8,
-            "source_fragment" : "standard_metadata.egress_port = (bit<9>)hdr.srcRoutes[0].port"
-          }
-        },
-        {
           "op" : "pop",
           "parameters" : [
             {
@@ -660,7 +628,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 138,
+            "line" : 137,
             "column" : 8,
             "source_fragment" : "hdr.srcRoutes.pop_front(1)"
           }
@@ -723,7 +691,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 193,
+            "line" : 192,
             "column" : 8,
             "source_fragment" : "meta.switch_id = switch_id"
           }
@@ -749,7 +717,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 215,
+            "line" : 214,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           }
@@ -775,7 +743,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 215,
+            "line" : 214,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           }
@@ -814,7 +782,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 212,
+            "line" : 211,
             "column" : 36,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -837,7 +805,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 212,
+            "line" : 211,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.read(byte_cnt, (bit<32>)standard_metadata.egress_port)"
           }
@@ -879,7 +847,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 213,
+            "line" : 212,
             "column" : 8,
             "source_fragment" : "byte_cnt = byte_cnt + standard_metadata.packet_length"
           }
@@ -901,7 +869,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 219,
+            "line" : 218,
             "column" : 12,
             "source_fragment" : "hdr.intdata.setValid()"
           }
@@ -920,7 +888,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 220,
+            "line" : 219,
             "column" : 12,
             "source_fragment" : "hdr.intdata.switch_id = meta.switch_id"
           }
@@ -939,7 +907,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 221,
+            "line" : 220,
             "column" : 12,
             "source_fragment" : "hdr.intdata.ingress_port = standard_metadata.ingress_port"
           }
@@ -958,7 +926,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 222,
+            "line" : 221,
             "column" : 12,
             "source_fragment" : "hdr.intdata.egress_port = standard_metadata.egress_port"
           }
@@ -1000,7 +968,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 223,
+            "line" : 222,
             "column" : 12,
             "source_fragment" : "hdr.intdata.hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp"
           }
@@ -1019,7 +987,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 224,
+            "line" : 223,
             "column" : 12,
             "source_fragment" : "hdr.intdata.deq_qdepth = standard_metadata.deq_qdepth"
           }
@@ -1038,7 +1006,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 225,
+            "line" : 224,
             "column" : 12,
             "source_fragment" : "hdr.intdata.deq_timedelta = standard_metadata.deq_timedelta"
           }
@@ -1057,7 +1025,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 226,
+            "line" : 225,
             "column" : 12,
             "source_fragment" : "hdr.intdata.byte_cnt = byte_cnt"
           }
@@ -1089,7 +1057,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 228,
+            "line" : 227,
             "column" : 42,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1112,7 +1080,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 228,
+            "line" : 227,
             "column" : 12,
             "source_fragment" : "last_time_reg.read(last_time, (bit<32>)standard_metadata.egress_port)"
           }
@@ -1144,7 +1112,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 229,
+            "line" : 228,
             "column" : 32,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1167,7 +1135,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 229,
+            "line" : 228,
             "column" : 12,
             "source_fragment" : "last_time_reg.write((bit<32>)standard_metadata.egress_port, cur_time)"
           }
@@ -1186,7 +1154,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 230,
+            "line" : 229,
             "column" : 12,
             "source_fragment" : "hdr.intdata.last_time = last_time"
           }
@@ -1205,7 +1173,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 210,
+            "line" : 209,
             "column" : 26,
             "source_fragment" : "standard_metadata.egress_global_timestamp; ..."
           }
@@ -1244,7 +1212,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 216,
+            "line" : 215,
             "column" : 27,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1267,7 +1235,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 216,
+            "line" : 215,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.write((bit<32>)standard_metadata.egress_port, new_byte_cnt)"
           }
@@ -1292,7 +1260,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 146,
+            "line" : 145,
             "column" : 10,
             "source_fragment" : "ipv4_lpm"
           },
@@ -1330,7 +1298,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 165,
+            "line" : 164,
             "column" : 16,
             "source_fragment" : "srcRoute_finish()"
           },
@@ -1359,7 +1327,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 167,
+            "line" : 166,
             "column" : 16,
             "source_fragment" : "srcRoute_nhop()"
           },
@@ -1388,7 +1356,7 @@
           "id" : 3,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 169,
+            "line" : 168,
             "column" : 12,
             "source_fragment" : "drop()"
           },
@@ -1420,7 +1388,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 160,
+            "line" : 159,
             "column" : 11,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -1443,7 +1411,7 @@
           "id" : 1,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 162,
+            "line" : 161,
             "column" : 17,
             "source_fragment" : "hdr.srcRoutes[0].isValid()"
           },
@@ -1466,7 +1434,7 @@
           "id" : 2,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 163,
+            "line" : 162,
             "column" : 15,
             "source_fragment" : "hdr.srcRoutes[0].bos == 1"
           },
@@ -1494,7 +1462,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 179,
+        "line" : 178,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
@@ -1505,7 +1473,7 @@
           "id" : 4,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 196,
+            "line" : 195,
             "column" : 10,
             "source_fragment" : "switchId"
           },
@@ -1535,7 +1503,7 @@
           "id" : 5,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 212,
+            "line" : 211,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.read(byte_cnt, (bit<32>)standard_metadata.egress_port); ..."
           },
@@ -1564,7 +1532,7 @@
           "id" : 6,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 215,
+            "line" : 214,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           },
@@ -1593,7 +1561,7 @@
           "id" : 7,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 215,
+            "line" : 214,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           },
@@ -1622,7 +1590,7 @@
           "id" : 8,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 216,
+            "line" : 215,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.write((bit<32>)standard_metadata.egress_port, new_byte_cnt)"
           },
@@ -1651,7 +1619,7 @@
           "id" : 9,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 219,
+            "line" : 218,
             "column" : 12,
             "source_fragment" : "hdr.intdata.setValid(); ..."
           },
@@ -1683,7 +1651,7 @@
           "id" : 3,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 215,
+            "line" : 214,
             "column" : 24,
             "source_fragment" : "hdr.ethernet.etherType == TYPE_PROBE"
           },
@@ -1709,7 +1677,7 @@
           "id" : 4,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 218,
+            "line" : 217,
             "column" : 12,
             "source_fragment" : "hdr.ethernet.etherType == TYPE_PROBE"
           },
@@ -1739,7 +1707,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 243,
+        "line" : 242,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },

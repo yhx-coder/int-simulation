@@ -9,6 +9,8 @@ from scapy.sendrecv import sendp
 import probe
 import socket
 
+from simulation.config.constants import Constants
+
 
 def rcvControlMessage(controlPort):
     """
@@ -39,4 +41,4 @@ def sendProbe(portList):
 
 
 if __name__ == "__main__":
-    rcvControlMessage(8888)
+    rcvControlMessage(Constants.CONTROL_PORT)

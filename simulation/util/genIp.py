@@ -13,7 +13,6 @@ def genClusterHeadHostIp(hostId, isControlIp):
     :return: string ip地址字符串
     """
     if isControlIp:
-        return Constants.CONTROL_HOST_IP_PREFIX + str(hostId + 2)
+        return Constants.CONTROL_HOST_IP_PREFIX + str(hostId + 10)
     else:
-        return Constants.SWITCH_HOST_IP_PREFIX + str(hostId + 2)
-
+        return Constants.SWITCH_HOST_IP_PREFIX + str(hostId + 10)

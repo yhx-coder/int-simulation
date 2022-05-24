@@ -134,7 +134,6 @@ control MyIngress(inout headers hdr,
 
     action srcRoute_nhop() {
         standard_metadata.egress_spec = (bit<9>)hdr.srcRoutes[0].port;
-        standard_metadata.egress_port = (bit<9>)hdr.srcRoutes[0].port;
         hdr.srcRoutes.pop_front(1);
     }
 

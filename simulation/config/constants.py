@@ -5,8 +5,13 @@
 
 class Constants:
     """
-    设计分配地址为 2~254，最多支持 253 个簇头交换机。
+    设计分配地址为 2~254
     """
     CONTROL_HOST_IP_PREFIX = "192.168.80."
     SWITCH_HOST_IP_PREFIX = "10.0.0."
-    HOST_MAC_PREFIX = ""
+    TOPOLOGY_FILE = "resources/topoSrc/topo.txt"
+    NODE_NUM = 50
+    CONTROL_PORT = 8888
+    SWITCH_PATH = "simple_switch"
+    JSON_FILE = "resources/p4src/my_link_monitor.json"
+    PATH_GENERATION = "Test.java"

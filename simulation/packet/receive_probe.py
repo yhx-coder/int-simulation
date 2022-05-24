@@ -39,14 +39,15 @@ def pktHandler(pkt):
                 totalTime = int(round(totalTime * 1000000))
 
                 sql = "insert into int_data(switchId,ingressPort,egressPort," \
-                      "hopLatency,deqQdepth,deqTimedelta,interval,utilization,packetId,) " \
+                      "hopLatency,deqQdepth,deqTimedelta,interval,utilization,curTime,packetId) " \
                       "values(%(switch_id),%(ingress_port),%(egress_port)," \
                       "%(hop_latency),%(deq_qdepth),%(deq_timedelta),%(interval),%(utilization)," \
-                      "%(totalTime),%(packetId))"
+                      "%(totalTime),%(curTime),%(packetId))"
 
                 values = {"switch_id": switch_id, "ingress_port": ingress_port, "egress_port": egress_port,
                           "hop_latency": hop_latency, "deq_qdepth": deq_qdepth, "deq_timedelta": deq_timedelta,
                           "interval": interval, "utilization": utilization, "totalTime": totalTime,
+                          "curTime": pkt.cur_time,
                           "packetId": packetId}
                 cursor.execute(sql, values)
                 cursor.commit()

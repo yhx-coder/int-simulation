@@ -23,13 +23,23 @@ class Table:
 class Device:
     def __init__(self, deviceType, deviceId):
         """
-        :param deviceType: 设备类型
+        :param deviceType: 设备类型 "h"或者"s"
         :param deviceId:  设备 Id
         """
         self.type = deviceType
         self.id = deviceId
         self.totalPorts = 0
         self.portList = []
+
+    def __eq__(self, other):
+        if self is None and other is not None:
+            return False
+        elif self is not None and other is None:
+            return False
+        elif self is None and other is None:
+            return True
+        else:
+            return self.type == other.type and self.id == other.id
 
     def connect(self, device):
         """
@@ -57,14 +67,9 @@ class Switch(Device):
         self.tables.append(Table(name, action, key, value))
 
 
-"""
-簇头相连的主机类
-"""
-
-
+# 簇头相连的主机类
 class Host(Device):
-    def __init__(self, deviceType, deviceId, switchIp="", controlIp="", mac=""):
+    def __init__(self, deviceType, deviceId, switchIp="", controlIp=""):
         Device.__init__(self, deviceType, deviceId)
         self.switchIp = switchIp
         self.controlIp = controlIp
-        self.mac = mac
