@@ -14,4 +14,4 @@ class Constants:
     CONTROL_PORT = 8888
     SWITCH_PATH = "simple_switch"
     JSON_FILE = "resources/p4src/my_link_monitor.json"
-    PATH_GENERATION = "Test.java"
+    PATH_GENERATION = "D:/IDEA/project/int/target/int_java.jar"

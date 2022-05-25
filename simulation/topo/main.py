@@ -4,6 +4,7 @@
 import copy
 import json
 import socket
+import struct
 import subprocess
 
 from simulation.config.constants import Constants
@@ -99,11 +100,11 @@ class TelemetryController:
             tcp_socket.connect((host.controlIp, Constants.CONTROL_PORT))
             self.controlLink[host.id] = tcp_socket
 
-    def sendControlInfo(self, pathList):
+    def sendControlInfo(self, rev_pathList):
+        # 先整理下要发送的数据
+        # {簇头交换机id:[[],[]]由该簇头发的包路径列表}
         startNodeDict = {}
-        for path in pathList:
-            startNodeDict[path[0]] = {"portsList": []}
-        for path in pathList:
+        for path in rev_pathList:
             length = len(path)
             portList = []
             for i in range(length - 1):
@@ -115,13 +116,18 @@ class TelemetryController:
             last_switch = self.switchList[path[length - 1]]
             port = self.getDevPort(last_switch, self.clusterHeadHostDic[last_switch.id])
             portList.append(port)
-            startNodeDict[path[0]]["portsList"].append(portList)
+            if path[0] in startNodeDict:
+                startNodeDict[path[0]].append(portList)
+            else:
+                startNodeDict[path[0]] = [portList]
+
         for key, value in startNodeDict.items():
             tcp_socket = self.controlLink[key]
             if tcp_socket:
-                info = json.dumps(value)
-                info.encode("utf-8")
-                tcp_socket.send(info)
+                payload = str(value).encode("utf-8")
+                header = struct.pack("I", payload.__len__())
+                controlMessage = header + payload
+                tcp_socket.send(controlMessage)
 
     def start(self):
         self.genSwitch()
@@ -137,7 +143,7 @@ class TelemetryController:
 if __name__ == "__main__":
     topo = genAdjMatrix()
     # java程序分两行输出，第一行打印路径列表，第二行打印簇头交换机列表。
-    with subprocess.Popen("java %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE) as proc:
+    with subprocess.Popen("java -jar %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE) as proc:
         i = 0
         while True:
             info = proc.stdout.readline()
@@ -146,9 +152,9 @@ if __name__ == "__main__":
             info = info.decode("utf-8")
             info = info.replace("\r\n", "")
             if i == 0:
-                pathList = info
-            elif i == 1:
                 clusterHeadSwitchList = info
+            elif i == 1:
+                pathList = info
             i += 1
 
     pathList = eval(pathList)
