@@ -6,12 +6,26 @@ import struct
 
 from concurrent.futures import ThreadPoolExecutor
 
+from scapy.interfaces import get_if_list
 from scapy.sendrecv import sendp
 
 import probe
 import socket
 
 from simulation.config.constants import Constants
+
+
+def get_if():
+    ifs = get_if_list()
+    iface = None  # "h1-eth0"
+    for i in get_if_list():
+        if "eth0" in i:
+            iface = i
+            break
+    if not iface:
+        print("Cannot find eth0 interface")
+        exit(1)
+    return iface
 
 
 def rcvControlMessage(controlPort):
@@ -54,10 +68,11 @@ def rcvControlMessage(controlPort):
 def sendProbe(portLists):
     for portList in portLists:
         packet = probe.genProbe(portList)
-        # 内网网卡名要设置成"eth0"
-        sendp(packet, iface="eth0")
+        # 内网网卡"h-eth0"
+        sendp(packet, iface=interface)
 
 
 if __name__ == "__main__":
+    interface = get_if()
     pool = ThreadPoolExecutor(max_workers=2)
     rcvControlMessage(Constants.CONTROL_PORT)

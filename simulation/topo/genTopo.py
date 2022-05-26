@@ -6,7 +6,7 @@ import os
 from mininet.cli import CLI
 from mininet.link import TCLink
 from mininet.net import Mininet
-from mininet.node import RemoteController, OVSSwitch
+from mininet.node import OVSSwitch
 from mininet.topo import Topo
 
 from simulation.config.constants import Constants
@@ -16,7 +16,6 @@ from simulation.topo.p4_mininet import P4Host, P4Switch
 class MyTopo(Topo):
     def build(self, main):
         mininetSwitchList = []
-        mininetHostList = []
         cur_path = os.path.abspath("..")
         jsonFile = os.path.join(os.path.dirname(cur_path), Constants.JSON_FILE)
         for i in range(main.totalNum):
@@ -30,7 +29,7 @@ class MyTopo(Topo):
         for i in range(len(main.clusterHeadHostList)):
             host = main.clusterHeadHostList[i]
             name = host.type + str(host.id)
-            mininetHostList.append(self.addHost(name=name, ip=host.switchIp + "/24"))
+            self.addHost(name=name, ip=host.switchIp + "/24")
 
         # 1000 Mbps, 1ms delay, 2% loss, 1000 packet queue
         linkOpts = dict(bw=1000, delay='1ms', loss=10, max_queue_size=1000, use_htb=True)
@@ -48,6 +47,10 @@ class MyTopo(Topo):
                                  port1=main.switchList[i].portList[j], port2=port2, **linkOpts)
 
 
+def cleanMininet():
+    os.system("sudo mn -c")
+
+
 class TopoMaker:
     def __init__(self, main):
         self.topo = MyTopo(main)
@@ -58,16 +61,23 @@ class TopoMaker:
         self.net = Mininet(topo=self.topo,
                            host=P4Host,
                            switch=P4Switch,
-                           link=TCLink,
-                           controller=None)
-        controller_list = []
-        c = self.net.addController('mycontroller', controller=RemoteController)
-        controller_list.append(c)
-        ovs = self.net.addSwitch('s999', cls=OVSSwitch)
-        ovs.start(controller_list)
+                           link=TCLink)
+
+        s999 = self.net.addSwitch("s999", cls=OVSSwitch)
+
+        for host in self.main.clusterHeadHostList:
+            hostName = host.type + str(host.id)
+            netHost = self.net.getNodeByName(hostName)
+            self.net.addLink(netHost, s999)
+            action = "ip addr add %s/24 dev %s" % (host.controlIp, hostName + "-eth1")
+            netHost.cmd(action)
+            netHost.cmd("python3 ../../packet/send_probe.py")
+            netHost.cmd("python3 ../../packet/receive_probe.py")
+        self.net.start()
+        os.popen("ovs-vsctl add-port s999 %s" % Constants.NETWORK_INTERFACE_TO_RELEASE)
 
     def getCli(self):
         CLI(self.net)
 
-    def cleanMininet(self):
-        os.system("sudo mn -c")
+    def stopNet(self):
+        self.net.stop()

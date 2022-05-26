@@ -8,6 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 from simulation.config.constants import Constants
 
+
 # cur_path = os.path.dirname(os.path.realpath(__file__))
 #
 # cur_path =  os.path.dirname(cur_path)
@@ -78,7 +79,15 @@ from simulation.config.constants import Constants
 # print(type(c))
 # print(c)
 
-pool = ThreadPoolExecutor(max_workers=2)
-def a():
-    print("hhhhh")
-pool.submit(a)
+# pool = ThreadPoolExecutor(max_workers=2)
+# def a():
+#     print("hhhhh")
+# pool.submit(a)
+
+def foo():
+    print(a)
+
+
+if __name__ == "__main__":
+    a = "11"
+    foo()

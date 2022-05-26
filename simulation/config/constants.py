@@ -15,3 +15,5 @@ class Constants:
     SWITCH_PATH = "simple_switch"
     JSON_FILE = "resources/p4src/my_link_monitor.json"
     PATH_GENERATION = "D:/IDEA/project/int/target/int_java.jar"
+    NETWORK_INTERFACE_TO_RELEASE = "ens33"
+

@@ -10,7 +10,7 @@ import subprocess
 from simulation.config.constants import Constants
 from simulation.pojo.device import Switch, Host
 from simulation.topo import thrift_API
-from simulation.topo.genTopo import TopoMaker
+from simulation.topo.genTopo import TopoMaker, cleanMininet
 from simulation.topo.thrift_API import ThriftAPI
 from simulation.util.genAdjMatrix import genAdjMatrix
 from simulation.util.genIp import genClusterHeadHostIp
@@ -73,7 +73,7 @@ class TelemetryController:
 
     def makeTopo(self):
         topoMaker = TopoMaker(self)
-        topoMaker.cleanMininet()
+        cleanMininet()
         topoMaker.genTopo()
         for switch in self.switchList:
             """
