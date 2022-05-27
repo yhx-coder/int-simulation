@@ -3,6 +3,7 @@
 #include <v1model.p4>
 
 const bit<16> TYPE_IPV4  = 0x800;
+const bit<16> TYPE_ARP  = 0x806;
 const bit<16> TYPE_PROBE = 0x102;
 
 #define MAX_HOPS 5
@@ -56,6 +57,19 @@ header ipv4_t {
     ip4Addr_t dstAddr;
 }
 
+
+header arp_t {
+    bit<16> arpHdr;     /* format of hardware address */
+    bit<16> arpPro;     /* format of protocol address */
+    bit<8>  arpHln;     /* length of hardware address */
+    bit<8>  arpPln;     /* length of protocol address */
+    bit<16> arpOp;      /* ARP/RARP operation */
+    bit<48> arpSha;     /* sender hardware address */
+    bit<32> arpSpa;     /* sender protocol address */
+    bit<48> arpTha;     /* target hardware address */
+    bit<32> arpTpa;     /* target protocol address */
+}
+
 struct metadata {
     switchID_t switch_id;
 }
@@ -63,6 +77,7 @@ struct metadata {
 
 struct headers {
     ethernet_t              ethernet;
+    arp_t                   arp;
     srcRoute_t[MAX_HOPS]    srcRoutes;
     int_data_t              intdata;
     ipv4_t                  ipv4;
@@ -85,9 +100,15 @@ parser MyParser(packet_in packet,
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
             TYPE_IPV4: parse_ipv4;
+            TYPE_ARP: parse_arp;
             TYPE_PROBE: parse_srcRouting;
             default: accept;
         }
+    }
+
+    state parse_arp {
+        packet.extract(hdr.arp);
+        transition accept;
     }
 
     state parse_ipv4 {
@@ -142,6 +163,31 @@ control MyIngress(inout headers hdr,
         hdr.ethernet.etherType = TYPE_IPV4;
     }
 
+    action arpreply(bit<48>repmac) {
+        standard_metadata.egress_spec = standard_metadata.ingress_port;
+        standard_metadata.egress_port = standard_metadata.ingress_port;
+        hdr.ethernet.srcAddr=repmac;
+        hdr.ethernet.dstAddr=hdr.arp.arpSha;
+        bit<32> tempip;
+        tempip=hdr.arp.arpSpa;
+        hdr.arp.arpSpa=hdr.arp.arpTpa;
+        hdr.arp.arpTpa=tempip;
+        hdr.arp.arpTha=hdr.arp.arpSha;
+        hdr.arp.arpSha=repmac;
+    }
+
+    table doarp {
+        actions = {
+            arpreply;
+            NoAction;
+        }
+        key = {
+            hdr.arp.arpTha:exact;
+            hdr.arp.arpTpa:exact;
+        }
+        default_action=NoAction();
+    }
+
     table ipv4_lpm {
         key = {
             hdr.ipv4.dstAddr: lpm;
@@ -164,6 +210,8 @@ control MyIngress(inout headers hdr,
                 srcRoute_finish();
             }
                 srcRoute_nhop();
+        }else if(hdr.arp.isValid()){
+             doarp.apply();
         }else{
             drop();
         }
@@ -264,6 +312,7 @@ control MyComputeChecksum(inout headers  hdr, inout metadata meta) {
 control MyDeparser(packet_out packet, in headers hdr) {
     apply {
         packet.emit(hdr.ethernet);
+        packet.emit(hdr.arp);
         packet.emit(hdr.srcRoutes);
         packet.emit(hdr.intdata);
         packet.emit(hdr.ipv4);

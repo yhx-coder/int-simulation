@@ -6,6 +6,7 @@ import struct
 
 from concurrent.futures import ThreadPoolExecutor
 
+from scapy.arch import get_if_hwaddr
 from scapy.interfaces import get_if_list
 from scapy.sendrecv import sendp
 
@@ -67,7 +68,7 @@ def rcvControlMessage(controlPort):
 
 def sendProbe(portLists):
     for portList in portLists:
-        packet = probe.genProbe(portList)
+        packet = probe.genProbe(portList, srcMac=get_if_hwaddr(interface))
         # 内网网卡"h-eth0"
         sendp(packet, iface=interface)
 

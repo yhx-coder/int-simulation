@@ -69,7 +69,8 @@ class Switch(Device):
 
 # 簇头相连的主机类
 class Host(Device):
-    def __init__(self, deviceType, deviceId, switchIp="", controlIp=""):
+    def __init__(self, deviceType, deviceId, switchIp="", controlIp="", mac=""):
         Device.__init__(self, deviceType, deviceId)
         self.switchIp = switchIp
         self.controlIp = controlIp
+        self.mac = mac

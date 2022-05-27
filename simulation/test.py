@@ -4,6 +4,7 @@
 import json
 import os
 import struct
+import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
 from simulation.config.constants import Constants
@@ -83,11 +84,31 @@ from simulation.config.constants import Constants
 # def a():
 #     print("hhhhh")
 # pool.submit(a)
+# pool.shutdown()
 
-def foo():
-    print(a)
+# a = "[[2],[1]]"
+# b = eval(a)
+# print(type(b))
+# print(b)
 
+with subprocess.Popen("java -jar %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE) as proc:
+    i = 0
+    while True:
+        info = proc.stdout.readline()
+        if info == '' or proc.poll() is not None:
+            break
+        info = info.decode("utf-8")
+        info = info.replace("\r\n", "")
+        if i == 0:
+            clusterHeadSwitchList = info
+        elif i == 1:
+            pathList = info
+        elif i == 2:
+            topo = info
+        i += 1
 
-if __name__ == "__main__":
-    a = "11"
-    foo()
+pathList = eval(pathList)
+clusterHeadSwitchList = eval(clusterHeadSwitchList)
+topo = eval(topo)
+print(topo)
+

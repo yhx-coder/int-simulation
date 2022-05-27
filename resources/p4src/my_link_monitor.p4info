@@ -3,6 +3,32 @@ pkg_info {
 }
 tables {
   preamble {
+    id: 33616550
+    name: "MyIngress.doarp"
+    alias: "doarp"
+  }
+  match_fields {
+    id: 1
+    name: "hdr.arp.arpTha"
+    bitwidth: 48
+    match_type: EXACT
+  }
+  match_fields {
+    id: 2
+    name: "hdr.arp.arpTpa"
+    bitwidth: 32
+    match_type: EXACT
+  }
+  action_refs {
+    id: 16786914
+  }
+  action_refs {
+    id: 16800567
+  }
+  size: 1024
+}
+tables {
+  preamble {
     id: 33574068
     name: "MyIngress.ipv4_lpm"
     alias: "ipv4_lpm"
@@ -81,6 +107,18 @@ actions {
     id: 16781426
     name: "MyIngress.srcRoute_finish"
     alias: "srcRoute_finish"
+  }
+}
+actions {
+  preamble {
+    id: 16786914
+    name: "MyIngress.arpreply"
+    alias: "arpreply"
+  }
+  params {
+    id: 1
+    name: "repmac"
+    bitwidth: 48
   }
 }
 actions {

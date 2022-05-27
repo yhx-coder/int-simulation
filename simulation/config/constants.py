@@ -9,6 +9,7 @@ class Constants:
     """
     CONTROL_HOST_IP_PREFIX = "192.168.80."
     SWITCH_HOST_IP_PREFIX = "10.0.0."
+    HOST_MAC_PREFIX = "00:01:00:00:00:"
     TOPOLOGY_FILE = "resources/topoSrc/topo.txt"
     NODE_NUM = 50
     CONTROL_PORT = 8888

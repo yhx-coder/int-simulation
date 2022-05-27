@@ -2,7 +2,6 @@
 # @author: ming
 # @date: 2022/5/23 11:00
 import copy
-import json
 import socket
 import struct
 import subprocess
@@ -14,14 +13,15 @@ from simulation.topo.genTopo import TopoMaker, cleanMininet
 from simulation.topo.thrift_API import ThriftAPI
 from simulation.util.genAdjMatrix import genAdjMatrix
 from simulation.util.genIp import genClusterHeadHostIp
+from simulation.util.genMac import genMac
 
 
 class TelemetryController:
-    def __init__(self, topo, clusterHeadSwitchList):
-        self.topo = copy.deepcopy(topo)
+    def __init__(self, topo1, clusterHeadSwitchList1):
+        self.topo = copy.deepcopy(topo1)
         self.totalNum = Constants.NODE_NUM
         self.switchList = []
-        self.clusterHeadSwitchList = copy.deepcopy(clusterHeadSwitchList)
+        self.clusterHeadSwitchList = copy.deepcopy(clusterHeadSwitchList1)
         self.clusterHeadHostList = []
         self.clusterHeadHostDic = {}
         self.controlLink = {}
@@ -29,28 +29,29 @@ class TelemetryController:
         self.depth = 10
 
     def genSwitch(self):
-        for i in range(self.totalNum):
-            thriftPort = 9090 + i
+        for num in range(self.totalNum):
+            thriftPort = 9090 + num
 
-            switch = Switch(deviceType="s", deviceId=i, thriftPort=thriftPort)
+            switch = Switch(deviceType="s", deviceId=num, thriftPort=thriftPort)
             self.switchList.append(switch)
 
     def genHost(self):
         for switch in self.clusterHeadSwitchList:
-            host = Host("h", switch.id, genClusterHeadHostIp(switch.id, 0), genClusterHeadHostIp(switch.id, 1))
+            host = Host("h", switch.id, genClusterHeadHostIp(switch.id, 0), genClusterHeadHostIp(switch.id, 1),
+                        genMac(switch.id))
             self.clusterHeadHostList.append(host)
             self.clusterHeadHostDic[switch.id] = host
 
     def genSwitchLink(self):
-        for i in range(self.totalNum):
-            for j in range(i + 1, self.totalNum):
-                if self.topo[i][j] != 0:
-                    self.switchList[i].connect(self.switchList[j])
+        for row in range(self.totalNum):
+            for column in range(row + 1, self.totalNum):
+                if self.topo[row][column] != 0:
+                    self.switchList[row].connect(self.switchList[column])
 
     def genClusterHeadLink(self):
-        for i in range(len(self.clusterHeadHostList)):
-            switchId = self.clusterHeadHostList[i].id
-            self.clusterHeadHostList[i].connect(self.switchList[switchId])
+        for num in range(len(self.clusterHeadHostList)):
+            switchId = self.clusterHeadHostList[num].id
+            self.clusterHeadHostList[num].connect(self.switchList[switchId])
 
     # 获取 device1 的连接端口
     def getDevPort(self, device1, device2):
@@ -58,6 +59,13 @@ class TelemetryController:
             if port.adjDevice == device2:
                 return port.portId
         return -1
+
+    def genArpTable(self):
+        for host in self.clusterHeadHostList:
+            for switch in self.switchList:
+                entry = {"table_name": "MyIngress.doarp", "action_name": "MyIngress.arpreply",
+                         "match_keys": ["00:00:00:00:00:00", host.switchIp], "action_params": [host.mac]}
+                switch.tables.append(entry)
 
     def genSwitchIdTable(self):
         for switchId, switch in enumerate(self.switchList):
@@ -107,12 +115,12 @@ class TelemetryController:
         for path in rev_pathList:
             length = len(path)
             portList = []
-            for i in range(length - 1):
-                port = self.getDevPort(self.switchList[path[i]], self.switchList[path[i + 1]])
+            for num in range(length - 1):
+                port = self.getDevPort(self.switchList[path[num]], self.switchList[path[num + 1]])
                 if port != -1:
                     portList = portList.append(port)
                 else:
-                    raise Exception("交换机{}和{}间无连接".format(path[i], path[i + 1]))
+                    raise Exception("交换机{}和{}间无连接".format(path[num], path[num + 1]))
             last_switch = self.switchList[path[length - 1]]
             port = self.getDevPort(last_switch, self.clusterHeadHostDic[last_switch.id])
             portList.append(port)
@@ -141,7 +149,6 @@ class TelemetryController:
 
 
 if __name__ == "__main__":
-    topo = genAdjMatrix()
     # java程序分两行输出，第一行打印路径列表，第二行打印簇头交换机列表。
     with subprocess.Popen("java -jar %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE) as proc:
         i = 0
@@ -155,10 +162,13 @@ if __name__ == "__main__":
                 clusterHeadSwitchList = info
             elif i == 1:
                 pathList = info
+            elif i == 2:
+                topo = info
             i += 1
 
     pathList = eval(pathList)
     clusterHeadSwitchList = eval(clusterHeadSwitchList)
+    topo = eval(topo)
     myController = TelemetryController(topo, clusterHeadSwitchList)
     myController.start()
     myController.sendControlInfo(pathList)

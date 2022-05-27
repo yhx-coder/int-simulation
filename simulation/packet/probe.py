@@ -35,13 +35,15 @@ bind_layers(SrcRoute, IntData, bos=1)
 bind_layers(IntData, IntData)
 
 
-def genProbe(portList):
+def genProbe(portList, srcMac, dstMac="FF:FF:FF:FF:FF:FF"):
     """
     生成探针包
+    :param srcMac: 源 mac
+    :param dstMac: 目的 mac
     :param portList: 源路由的端口号列表。每一项是字符串类型
     :return:
     """
-    probe = Ether(dst="FF:FF:FF:FF:FF:FF", type=TYPE_PROBE)
+    probe = Ether(dst=dstMac, src=srcMac, type=TYPE_PROBE)
     i = 0
     for port in portList:
         port = int(port)
