@@ -71,8 +71,8 @@ class TopoMaker:
             self.net.addLink(netHost, s999)
             action = "ip addr add %s/24 dev %s" % (host.controlIp, hostName + "-eth1")
             netHost.cmd(action)
-            netHost.cmd("python3 ../../packet/send_probe.py")
-            netHost.cmd("python3 ../../packet/receive_probe.py")
+            netHost.cmd("python3 ../../packet/send_probe.py &")
+            netHost.cmd("python3 ../../packet/receive_probe.py &")
         self.net.start()
         os.popen("ovs-vsctl add-port s999 %s" % Constants.NETWORK_INTERFACE_TO_RELEASE)
 
