@@ -7,7 +7,7 @@
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
-from ttypes import *
+from .ttypes import *
 from thrift.Thrift import TProcessor
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol, TProtocol
@@ -3042,7 +3042,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_get_num_entries_result()
     try:
       result.success = self._handler.bm_mt_get_num_entries(args.cxt_id, args.table_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_get_num_entries", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3056,7 +3056,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_clear_entries_result()
     try:
       self._handler.bm_mt_clear_entries(args.cxt_id, args.table_name, args.reset_default_entry)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_clear_entries", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3070,7 +3070,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_add_entry_result()
     try:
       result.success = self._handler.bm_mt_add_entry(args.cxt_id, args.table_name, args.match_key, args.action_name, args.action_data, args.options)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_add_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3084,7 +3084,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_set_default_action_result()
     try:
       self._handler.bm_mt_set_default_action(args.cxt_id, args.table_name, args.action_name, args.action_data)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_set_default_action", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3098,7 +3098,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_reset_default_entry_result()
     try:
       self._handler.bm_mt_reset_default_entry(args.cxt_id, args.table_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_reset_default_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3112,7 +3112,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_delete_entry_result()
     try:
       self._handler.bm_mt_delete_entry(args.cxt_id, args.table_name, args.entry_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_delete_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3126,7 +3126,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_modify_entry_result()
     try:
       self._handler.bm_mt_modify_entry(args.cxt_id, args.table_name, args.entry_handle, args.action_name, args.action_data)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_modify_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3140,7 +3140,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_set_entry_ttl_result()
     try:
       self._handler.bm_mt_set_entry_ttl(args.cxt_id, args.table_name, args.entry_handle, args.timeout_ms)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_set_entry_ttl", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3154,7 +3154,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_add_member_result()
     try:
       result.success = self._handler.bm_mt_act_prof_add_member(args.cxt_id, args.act_prof_name, args.action_name, args.action_data)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_add_member", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3168,7 +3168,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_delete_member_result()
     try:
       self._handler.bm_mt_act_prof_delete_member(args.cxt_id, args.act_prof_name, args.mbr_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_delete_member", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3182,7 +3182,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_modify_member_result()
     try:
       self._handler.bm_mt_act_prof_modify_member(args.cxt_id, args.act_prof_name, args.mbr_handle, args.action_name, args.action_data)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_modify_member", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3196,7 +3196,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_create_group_result()
     try:
       result.success = self._handler.bm_mt_act_prof_create_group(args.cxt_id, args.act_prof_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_create_group", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3210,7 +3210,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_delete_group_result()
     try:
       self._handler.bm_mt_act_prof_delete_group(args.cxt_id, args.act_prof_name, args.grp_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_delete_group", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3224,7 +3224,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_add_member_to_group_result()
     try:
       self._handler.bm_mt_act_prof_add_member_to_group(args.cxt_id, args.act_prof_name, args.mbr_handle, args.grp_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_add_member_to_group", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3238,7 +3238,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_remove_member_from_group_result()
     try:
       self._handler.bm_mt_act_prof_remove_member_from_group(args.cxt_id, args.act_prof_name, args.mbr_handle, args.grp_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_remove_member_from_group", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3252,7 +3252,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_get_members_result()
     try:
       result.success = self._handler.bm_mt_act_prof_get_members(args.cxt_id, args.act_prof_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_get_members", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3266,7 +3266,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_get_member_result()
     try:
       result.success = self._handler.bm_mt_act_prof_get_member(args.cxt_id, args.act_prof_name, args.mbr_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_get_member", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3280,7 +3280,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_get_groups_result()
     try:
       result.success = self._handler.bm_mt_act_prof_get_groups(args.cxt_id, args.act_prof_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_get_groups", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3294,7 +3294,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_act_prof_get_group_result()
     try:
       result.success = self._handler.bm_mt_act_prof_get_group(args.cxt_id, args.act_prof_name, args.grp_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_act_prof_get_group", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3308,7 +3308,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_add_entry_result()
     try:
       result.success = self._handler.bm_mt_indirect_add_entry(args.cxt_id, args.table_name, args.match_key, args.mbr_handle, args.options)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_add_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3322,7 +3322,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_modify_entry_result()
     try:
       self._handler.bm_mt_indirect_modify_entry(args.cxt_id, args.table_name, args.entry_handle, args.mbr_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_modify_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3336,7 +3336,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_delete_entry_result()
     try:
       self._handler.bm_mt_indirect_delete_entry(args.cxt_id, args.table_name, args.entry_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_delete_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3350,7 +3350,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_set_entry_ttl_result()
     try:
       self._handler.bm_mt_indirect_set_entry_ttl(args.cxt_id, args.table_name, args.entry_handle, args.timeout_ms)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_set_entry_ttl", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3364,7 +3364,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_set_default_member_result()
     try:
       self._handler.bm_mt_indirect_set_default_member(args.cxt_id, args.table_name, args.mbr_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_set_default_member", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3378,7 +3378,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_reset_default_entry_result()
     try:
       self._handler.bm_mt_indirect_reset_default_entry(args.cxt_id, args.table_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_reset_default_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3392,7 +3392,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_ws_add_entry_result()
     try:
       result.success = self._handler.bm_mt_indirect_ws_add_entry(args.cxt_id, args.table_name, args.match_key, args.grp_handle, args.options)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_ws_add_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3406,7 +3406,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_ws_modify_entry_result()
     try:
       self._handler.bm_mt_indirect_ws_modify_entry(args.cxt_id, args.table_name, args.entry_handle, args.grp_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_ws_modify_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3420,7 +3420,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_indirect_ws_set_default_group_result()
     try:
       self._handler.bm_mt_indirect_ws_set_default_group(args.cxt_id, args.table_name, args.grp_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_indirect_ws_set_default_group", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3434,7 +3434,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_read_counter_result()
     try:
       result.success = self._handler.bm_mt_read_counter(args.cxt_id, args.table_name, args.entry_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_read_counter", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3448,7 +3448,8 @@ class Processor(Iface, TProcessor):
     result = bm_mt_reset_counters_result()
     try:
       self._handler.bm_mt_reset_counters(args.cxt_id, args.table_name)
-    except InvalidTableOperation, ouch:
+
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_reset_counters", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3462,7 +3463,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_write_counter_result()
     try:
       self._handler.bm_mt_write_counter(args.cxt_id, args.table_name, args.entry_handle, args.value)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_write_counter", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3476,7 +3477,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_set_meter_rates_result()
     try:
       self._handler.bm_mt_set_meter_rates(args.cxt_id, args.table_name, args.entry_handle, args.rates)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_set_meter_rates", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3490,7 +3491,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_get_meter_rates_result()
     try:
       result.success = self._handler.bm_mt_get_meter_rates(args.cxt_id, args.table_name, args.entry_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_get_meter_rates", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3504,7 +3505,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_get_entries_result()
     try:
       result.success = self._handler.bm_mt_get_entries(args.cxt_id, args.table_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_get_entries", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3518,7 +3519,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_get_entry_result()
     try:
       result.success = self._handler.bm_mt_get_entry(args.cxt_id, args.table_name, args.entry_handle)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_get_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3532,7 +3533,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_get_default_entry_result()
     try:
       result.success = self._handler.bm_mt_get_default_entry(args.cxt_id, args.table_name)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_get_default_entry", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3546,7 +3547,7 @@ class Processor(Iface, TProcessor):
     result = bm_mt_get_entry_from_key_result()
     try:
       result.success = self._handler.bm_mt_get_entry_from_key(args.cxt_id, args.table_name, args.match_key, args.options)
-    except InvalidTableOperation, ouch:
+    except InvalidTableOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mt_get_entry_from_key", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3560,7 +3561,8 @@ class Processor(Iface, TProcessor):
     result = bm_counter_read_result()
     try:
       result.success = self._handler.bm_counter_read(args.cxt_id, args.counter_name, args.index)
-    except InvalidCounterOperation, ouch:
+
+    except InvalidCounterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_counter_read", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3574,7 +3576,7 @@ class Processor(Iface, TProcessor):
     result = bm_counter_reset_all_result()
     try:
       self._handler.bm_counter_reset_all(args.cxt_id, args.counter_name)
-    except InvalidCounterOperation, ouch:
+    except InvalidCounterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_counter_reset_all", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3588,7 +3590,7 @@ class Processor(Iface, TProcessor):
     result = bm_counter_write_result()
     try:
       self._handler.bm_counter_write(args.cxt_id, args.counter_name, args.index, args.value)
-    except InvalidCounterOperation, ouch:
+    except InvalidCounterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_counter_write", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3602,7 +3604,7 @@ class Processor(Iface, TProcessor):
     result = bm_learning_ack_result()
     try:
       self._handler.bm_learning_ack(args.cxt_id, args.list_id, args.buffer_id, args.sample_ids)
-    except InvalidLearnOperation, ouch:
+    except InvalidLearnOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_learning_ack", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3616,7 +3618,7 @@ class Processor(Iface, TProcessor):
     result = bm_learning_ack_buffer_result()
     try:
       self._handler.bm_learning_ack_buffer(args.cxt_id, args.list_id, args.buffer_id)
-    except InvalidLearnOperation, ouch:
+    except InvalidLearnOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_learning_ack_buffer", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3630,7 +3632,7 @@ class Processor(Iface, TProcessor):
     result = bm_learning_set_timeout_result()
     try:
       self._handler.bm_learning_set_timeout(args.cxt_id, args.list_id, args.timeout_ms)
-    except InvalidLearnOperation, ouch:
+    except InvalidLearnOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_learning_set_timeout", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3644,7 +3646,7 @@ class Processor(Iface, TProcessor):
     result = bm_learning_set_buffer_size_result()
     try:
       self._handler.bm_learning_set_buffer_size(args.cxt_id, args.list_id, args.nb_samples)
-    except InvalidLearnOperation, ouch:
+    except InvalidLearnOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_learning_set_buffer_size", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3658,7 +3660,7 @@ class Processor(Iface, TProcessor):
     result = bm_load_new_config_result()
     try:
       self._handler.bm_load_new_config(args.config_str)
-    except InvalidSwapOperation, ouch:
+    except InvalidSwapOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_load_new_config", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3672,7 +3674,7 @@ class Processor(Iface, TProcessor):
     result = bm_swap_configs_result()
     try:
       self._handler.bm_swap_configs()
-    except InvalidSwapOperation, ouch:
+    except InvalidSwapOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_swap_configs", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3686,7 +3688,7 @@ class Processor(Iface, TProcessor):
     result = bm_meter_array_set_rates_result()
     try:
       self._handler.bm_meter_array_set_rates(args.cxt_id, args.meter_array_name, args.rates)
-    except InvalidMeterOperation, ouch:
+    except InvalidMeterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_meter_array_set_rates", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3700,7 +3702,7 @@ class Processor(Iface, TProcessor):
     result = bm_meter_set_rates_result()
     try:
       self._handler.bm_meter_set_rates(args.cxt_id, args.meter_array_name, args.index, args.rates)
-    except InvalidMeterOperation, ouch:
+    except InvalidMeterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_meter_set_rates", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3714,7 +3716,7 @@ class Processor(Iface, TProcessor):
     result = bm_meter_get_rates_result()
     try:
       result.success = self._handler.bm_meter_get_rates(args.cxt_id, args.meter_array_name, args.index)
-    except InvalidMeterOperation, ouch:
+    except InvalidMeterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_meter_get_rates", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3728,7 +3730,7 @@ class Processor(Iface, TProcessor):
     result = bm_register_read_result()
     try:
       result.success = self._handler.bm_register_read(args.cxt_id, args.register_array_name, args.idx)
-    except InvalidRegisterOperation, ouch:
+    except InvalidRegisterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_register_read", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3742,7 +3744,7 @@ class Processor(Iface, TProcessor):
     result = bm_register_read_all_result()
     try:
       result.success = self._handler.bm_register_read_all(args.cxt_id, args.register_array_name)
-    except InvalidRegisterOperation, ouch:
+    except InvalidRegisterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_register_read_all", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3756,7 +3758,7 @@ class Processor(Iface, TProcessor):
     result = bm_register_write_result()
     try:
       self._handler.bm_register_write(args.cxt_id, args.register_array_name, args.index, args.value)
-    except InvalidRegisterOperation, ouch:
+    except InvalidRegisterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_register_write", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3770,7 +3772,7 @@ class Processor(Iface, TProcessor):
     result = bm_register_write_range_result()
     try:
       self._handler.bm_register_write_range(args.cxt_id, args.register_array_name, args.start_index, args.end_index, args.value)
-    except InvalidRegisterOperation, ouch:
+    except InvalidRegisterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_register_write_range", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3784,7 +3786,7 @@ class Processor(Iface, TProcessor):
     result = bm_register_reset_result()
     try:
       self._handler.bm_register_reset(args.cxt_id, args.register_array_name)
-    except InvalidRegisterOperation, ouch:
+    except InvalidRegisterOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_register_reset", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3798,7 +3800,7 @@ class Processor(Iface, TProcessor):
     result = bm_parse_vset_add_result()
     try:
       self._handler.bm_parse_vset_add(args.cxt_id, args.parse_vset_name, args.value)
-    except InvalidParseVSetOperation, ouch:
+    except InvalidParseVSetOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_parse_vset_add", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3812,7 +3814,7 @@ class Processor(Iface, TProcessor):
     result = bm_parse_vset_remove_result()
     try:
       self._handler.bm_parse_vset_remove(args.cxt_id, args.parse_vset_name, args.value)
-    except InvalidParseVSetOperation, ouch:
+    except InvalidParseVSetOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_parse_vset_remove", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3826,7 +3828,8 @@ class Processor(Iface, TProcessor):
     result = bm_dev_mgr_add_port_result()
     try:
       self._handler.bm_dev_mgr_add_port(args.iface_name, args.port_num, args.pcap_path)
-    except InvalidDevMgrOperation, ouch:
+
+    except InvalidDevMgrOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_dev_mgr_add_port", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3840,7 +3843,7 @@ class Processor(Iface, TProcessor):
     result = bm_dev_mgr_remove_port_result()
     try:
       self._handler.bm_dev_mgr_remove_port(args.port_num)
-    except InvalidDevMgrOperation, ouch:
+    except InvalidDevMgrOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_dev_mgr_remove_port", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3854,7 +3857,7 @@ class Processor(Iface, TProcessor):
     result = bm_dev_mgr_show_ports_result()
     try:
       result.success = self._handler.bm_dev_mgr_show_ports()
-    except InvalidDevMgrOperation, ouch:
+    except InvalidDevMgrOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_dev_mgr_show_ports", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3879,7 +3882,7 @@ class Processor(Iface, TProcessor):
     result = bm_set_crc16_custom_parameters_result()
     try:
       self._handler.bm_set_crc16_custom_parameters(args.cxt_id, args.calc_name, args.crc16_config)
-    except InvalidCrcOperation, ouch:
+    except InvalidCrcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_set_crc16_custom_parameters", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3893,7 +3896,7 @@ class Processor(Iface, TProcessor):
     result = bm_set_crc32_custom_parameters_result()
     try:
       self._handler.bm_set_crc32_custom_parameters(args.cxt_id, args.calc_name, args.crc32_config)
-    except InvalidCrcOperation, ouch:
+    except InvalidCrcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_set_crc32_custom_parameters", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -3940,7 +3943,7 @@ class Processor(Iface, TProcessor):
     result = bm_get_id_from_name_result()
     try:
       result.success = self._handler.bm_get_id_from_name(args.cxt_id, args.resource_type, args.resource_name)
-    except InvalidIdLookup, ouch:
+    except InvalidIdLookup as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_get_id_from_name", TMessageType.REPLY, seqid)
     result.write(oprot)

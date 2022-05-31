@@ -16,20 +16,20 @@ from simulation.topo.p4_mininet import P4Host, P4Switch
 class MyTopo(Topo):
     def build(self, main):
         mininetSwitchList = []
-        cur_path = os.path.abspath("..")
-        jsonFile = os.path.join(os.path.dirname(cur_path), Constants.JSON_FILE)
+        mininetHostDic = {}
         for i in range(main.totalNum):
             switch = main.switchList[i]
             name = switch.type + str(switch.id)
             mininetSwitchList.append(self.addSwitch(name=name,
                                                     sw_path=Constants.SWITCH_PATH,
-                                                    json_path=jsonFile,
+                                                    json_path=main.jsonFile,
                                                     thrift_port=switch.thriftPort,
                                                     pcap_dump=False))
         for i in range(len(main.clusterHeadHostList)):
             host = main.clusterHeadHostList[i]
             name = host.type + str(host.id)
-            self.addHost(name=name, ip=host.switchIp + "/24")
+            mininetHost = self.addHost(name=name, ip=host.switchIp + "/24")
+            mininetHostDic[host.id] = mininetHost
 
         # 1000 Mbps, 1ms delay, 2% loss, 1000 packet queue
         linkOpts = dict(bw=1000, delay='1ms', loss=10, max_queue_size=1000, use_htb=True)
@@ -37,14 +37,14 @@ class MyTopo(Topo):
         for i in range(main.totalNum):
             for j in range(main.switchList[i].totalPorts):
                 adjDevice = main.switchList[i].portList[j].adjDevice
-                port2 = main.getDevPort(adjDevice, main.switchList[i])
+                port2 = main.getDevPortId(adjDevice, main.switchList[i])
                 if adjDevice.type == "s":
                     if adjDevice.id > i:
-                        self.addLink(main.switchList[i], adjDevice,
-                                     port1=main.switchList[i].portList[j], port2=port2, **linkOpts)
+                        self.addLink(mininetSwitchList[i], mininetSwitchList[adjDevice.id],
+                                     port1=main.switchList[i].portList[j].portId, port2=port2, **linkOpts)
                 else:
-                    self.addLink(main.switchList[i], adjDevice,
-                                 port1=main.switchList[i].portList[j], port2=port2, **linkOpts)
+                    self.addLink(mininetSwitchList[i], mininetHostDic[adjDevice.id],
+                                 port1=main.switchList[i].portList[j].portId, port2=port2, **linkOpts)
 
 
 def cleanMininet():

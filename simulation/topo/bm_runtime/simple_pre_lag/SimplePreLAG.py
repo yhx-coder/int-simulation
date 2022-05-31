@@ -7,7 +7,7 @@
 #
 
 from thrift.Thrift import TType, TMessageType, TException, TApplicationException
-from ttypes import *
+from .ttypes import *
 from thrift.Thrift import TProcessor
 from thrift.transport import TTransport
 from thrift.protocol import TBinaryProtocol, TProtocol
@@ -15,7 +15,6 @@ try:
   from thrift.protocol import fastbinary
 except:
   fastbinary = None
-
 
 class Iface:
   def bm_mc_mgrp_create(self, cxt_id, mgrp):
@@ -456,7 +455,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_mgrp_create_result()
     try:
       result.success = self._handler.bm_mc_mgrp_create(args.cxt_id, args.mgrp)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_mgrp_create", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -470,7 +469,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_mgrp_destroy_result()
     try:
       self._handler.bm_mc_mgrp_destroy(args.cxt_id, args.mgrp_handle)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_mgrp_destroy", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -484,7 +483,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_node_create_result()
     try:
       result.success = self._handler.bm_mc_node_create(args.cxt_id, args.rid, args.port_map, args.lag_map)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_node_create", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -498,7 +497,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_node_associate_result()
     try:
       self._handler.bm_mc_node_associate(args.cxt_id, args.mgrp_handle, args.l1_handle)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_node_associate", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -512,7 +511,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_node_dissociate_result()
     try:
       self._handler.bm_mc_node_dissociate(args.cxt_id, args.mgrp_handle, args.l1_handle)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_node_dissociate", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -526,7 +525,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_node_destroy_result()
     try:
       self._handler.bm_mc_node_destroy(args.cxt_id, args.l1_handle)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_node_destroy", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -540,7 +539,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_node_update_result()
     try:
       self._handler.bm_mc_node_update(args.cxt_id, args.l1_handle, args.port_map, args.lag_map)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_node_update", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -554,7 +553,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_set_lag_membership_result()
     try:
       self._handler.bm_mc_set_lag_membership(args.cxt_id, args.lag_index, args.port_map)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_set_lag_membership", TMessageType.REPLY, seqid)
     result.write(oprot)
@@ -568,7 +567,7 @@ class Processor(Iface, TProcessor):
     result = bm_mc_get_entries_result()
     try:
       result.success = self._handler.bm_mc_get_entries(args.cxt_id)
-    except InvalidMcOperation, ouch:
+    except InvalidMcOperation as ouch:
       result.ouch = ouch
     oprot.writeMessageBegin("bm_mc_get_entries", TMessageType.REPLY, seqid)
     result.write(oprot)

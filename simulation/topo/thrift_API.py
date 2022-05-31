@@ -28,6 +28,7 @@ operations by connecting to the *Thrift* server running on a capable switch. The
 main difference between this code and the original one is that this module is an API,
 whereas the other is a client.
 """
+from __future__ import print_function
 
 from collections import Counter
 import os
@@ -44,10 +45,8 @@ try:
     from bm_runtime.simple_pre import SimplePre
 except:
     pass
-try:
-    from bm_runtime.simple_pre_lag import SimplePreLAG
-except:
-    pass
+
+from bm_runtime.simple_pre_lag import SimplePreLAG
 
 
 def enum(type_name, *sequential, **named):
@@ -881,7 +880,7 @@ def hexstr(v):
     return "".join([format(c, "02x") for c in v])
 
 
-class ThriftAPI():
+class ThriftAPI(object):
     """This class implements a client that connects to a P4 switch control plane 
     and allows to configure it. It establishes a *Thrift* connection with the 
     switch server that is then used to forward configuration information.
@@ -2490,3 +2489,5 @@ class ThriftAPI():
 
     def get_suffix_lookup_map(self):
         return self.switch_info.suffix_lookup_map
+if __name__ == "__main__":
+    print(PreType.SimplePreLAG)

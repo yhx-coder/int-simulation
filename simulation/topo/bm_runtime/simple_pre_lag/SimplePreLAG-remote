@@ -6,7 +6,6 @@
 #
 #  options string: py
 #
-
 import sys
 import pprint
 from urlparse import urlparse
@@ -16,8 +15,8 @@ from thrift.transport import TSSLSocket
 from thrift.transport import THttpClient
 from thrift.protocol import TBinaryProtocol
 
-from bm_runtime.simple_pre_lag import SimplePreLAG
-from bm_runtime.simple_pre_lag.ttypes import *
+import SimplePreLAG
+from ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('')

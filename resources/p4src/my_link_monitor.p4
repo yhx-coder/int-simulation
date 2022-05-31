@@ -165,7 +165,6 @@ control MyIngress(inout headers hdr,
 
     action arpreply(bit<48>repmac) {
         standard_metadata.egress_spec = standard_metadata.ingress_port;
-        standard_metadata.egress_port = standard_metadata.ingress_port;
         hdr.ethernet.srcAddr=repmac;
         hdr.ethernet.dstAddr=hdr.arp.arpSha;
         bit<32> tempip;
@@ -240,7 +239,7 @@ control MyEgress(inout headers hdr,
         meta.switch_id = switch_id;
     }
 
-    table switchId {
+    table switch_id {
         actions = {
             setSwitchId;
             NoAction;
@@ -249,7 +248,7 @@ control MyEgress(inout headers hdr,
     }
 
     apply{
-        switchId.apply();
+        switch_id.apply();
 
         bit<32> byte_cnt;
         bit<32> new_byte_cnt;

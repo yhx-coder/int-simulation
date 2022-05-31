@@ -7,7 +7,7 @@ class Constants:
     """
     设计分配地址为 2~254
     """
-    CONTROL_HOST_IP_PREFIX = "192.168.80."
+    CONTROL_HOST_IP_PREFIX = "192.168.28."
     SWITCH_HOST_IP_PREFIX = "10.0.0."
     HOST_MAC_PREFIX = "00:01:00:00:00:"
     TOPOLOGY_FILE = "resources/topoSrc/topo.txt"
@@ -15,6 +15,6 @@ class Constants:
     CONTROL_PORT = 8888
     SWITCH_PATH = "simple_switch"
     JSON_FILE = "resources/p4src/my_link_monitor.json"
-    PATH_GENERATION = "D:/IDEA/project/int/target/int_java.jar"
-    NETWORK_INTERFACE_TO_RELEASE = "ens33"
+    PATH_GENERATION = "/home/john/Downloads/int_java.jar"
+    NETWORK_INTERFACE_TO_RELEASE = "ens37"
 

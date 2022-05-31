@@ -19,9 +19,9 @@
 # Antonin Bas (antonin@barefootnetworks.com)
 #
 #
-
-import sys
 import md5
+import sys
+
 
 from thrift import Thrift
 from thrift.transport import TSocket

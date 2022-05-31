@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 # @author: ming
 # @date: 2022/5/23 11:00
+import os
+import sys
+
+sys.path.append("/home/john/Downloads/int/")
+
 import copy
 import socket
 import struct
 import subprocess
-
 from simulation.config.constants import Constants
 from simulation.pojo.device import Switch, Host
-from simulation.topo import thrift_API
 from simulation.topo.genTopo import TopoMaker, cleanMininet
-from simulation.topo.thrift_API import ThriftAPI
-from simulation.util.genAdjMatrix import genAdjMatrix
+from simulation.topo.sswitch_thrift_API import SimpleSwitchThriftAPI
 from simulation.util.genIp import genClusterHeadHostIp
 from simulation.util.genMac import genMac
 
@@ -25,6 +27,8 @@ class TelemetryController:
         self.clusterHeadHostList = []
         self.clusterHeadHostDic = {}
         self.controlLink = {}
+        cur_path = os.path.abspath("..")
+        self.jsonFile = os.path.join(os.path.dirname(cur_path), Constants.JSON_FILE)
         self.rates = 100
         self.depth = 10
 
@@ -36,11 +40,11 @@ class TelemetryController:
             self.switchList.append(switch)
 
     def genHost(self):
-        for switch in self.clusterHeadSwitchList:
-            host = Host("h", switch.id, genClusterHeadHostIp(switch.id, 0), genClusterHeadHostIp(switch.id, 1),
-                        genMac(switch.id))
+        for id in self.clusterHeadSwitchList:
+            host = Host("h", id, genClusterHeadHostIp(id, 0), genClusterHeadHostIp(id, 1),
+                        genMac(id))
             self.clusterHeadHostList.append(host)
-            self.clusterHeadHostDic[switch.id] = host
+            self.clusterHeadHostDic[id] = host
 
     def genSwitchLink(self):
         for row in range(self.totalNum):
@@ -53,8 +57,8 @@ class TelemetryController:
             switchId = self.clusterHeadHostList[num].id
             self.clusterHeadHostList[num].connect(self.switchList[switchId])
 
-    # 获取 device1 的连接端口
-    def getDevPort(self, device1, device2):
+    # 获取 device1 的连接端口ID
+    def getDevPortId(self, device1, device2):
         for port in device1.portList:
             if port.adjDevice == device2:
                 return port.portId
@@ -93,12 +97,11 @@ class TelemetryController:
                 while the simple_switch target uses the SimplePreLAG engine.
                 摘自：https://github.com/p4lang/behavioral-model
             """
-            runtime = ThriftAPI(thrift_port=switch.thriftPort, thrift_ip="localhost",
-                                pre_type=thrift_API.PreType.SimplePreLAG)
+            runtime = SimpleSwitchThriftAPI(thrift_port=switch.thriftPort)
             # Sets rate of all egress queues  (packets per seconds)
-            runtime.client.set_all_egress_queue_rates(self.rates)
+            runtime.set_queue_rate(self.rates)
             # Sets depth of all egress queues. (number of packets)
-            runtime.client.set_all_egress_queue_depths(self.depth)
+            runtime.set_queue_depth(self.depth)
             switch.runtime = runtime
 
     def genControlLink(self):
@@ -116,13 +119,13 @@ class TelemetryController:
             length = len(path)
             portList = []
             for num in range(length - 1):
-                port = self.getDevPort(self.switchList[path[num]], self.switchList[path[num + 1]])
+                port = self.getDevPortId(self.switchList[path[num]], self.switchList[path[num + 1]])
                 if port != -1:
                     portList = portList.append(port)
                 else:
                     raise Exception("交换机{}和{}间无连接".format(path[num], path[num + 1]))
             last_switch = self.switchList[path[length - 1]]
-            port = self.getDevPort(last_switch, self.clusterHeadHostDic[last_switch.id])
+            port = self.getDevPortId(last_switch, self.clusterHeadHostDic[last_switch.id])
             portList.append(port)
             if path[0] in startNodeDict:
                 startNodeDict[path[0]].append(portList)
@@ -150,7 +153,8 @@ class TelemetryController:
 
 if __name__ == "__main__":
     # java程序分两行输出，第一行打印路径列表，第二行打印簇头交换机列表。
-    with subprocess.Popen("java -jar %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE) as proc:
+    try:
+        proc = subprocess.Popen("java -jar %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE)
         i = 0
         while True:
             info = proc.stdout.readline()
@@ -166,9 +170,11 @@ if __name__ == "__main__":
                 topo = info
             i += 1
 
-    pathList = eval(pathList)
-    clusterHeadSwitchList = eval(clusterHeadSwitchList)
-    topo = eval(topo)
+        pathList = eval(pathList)
+        clusterHeadSwitchList = eval(clusterHeadSwitchList)
+        topo = eval(topo)
+    finally:
+        proc.kill()
     myController = TelemetryController(topo, clusterHeadSwitchList)
     myController.start()
     myController.sendControlInfo(pathList)
