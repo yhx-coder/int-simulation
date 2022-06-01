@@ -1754,16 +1754,16 @@
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
-      "init_table" : "MyEgress.switch_id",
+      "init_table" : "MyEgress.switchId",
       "tables" : [
         {
-          "name" : "MyEgress.switch_id",
+          "name" : "MyEgress.switchId",
           "id" : 5,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
             "line" : 242,
             "column" : 10,
-            "source_fragment" : "switch_id"
+            "source_fragment" : "switchId"
           },
           "key" : [],
           "match_type" : "exact",

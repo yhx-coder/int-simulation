@@ -239,7 +239,7 @@ control MyEgress(inout headers hdr,
         meta.switch_id = switch_id;
     }
 
-    table switch_id {
+    table switchId {
         actions = {
             setSwitchId;
             NoAction;
@@ -248,7 +248,7 @@ control MyEgress(inout headers hdr,
     }
 
     apply{
-        switch_id.apply();
+        switchId.apply();
 
         bit<32> byte_cnt;
         bit<32> new_byte_cnt;

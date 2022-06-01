@@ -14,7 +14,9 @@ https://github.com/p4lang/tutorials/
 
 https://github.com/graytower/INT_PATH
 
-在控制器写流表时使用了：https://github.com/nsg-ethz/p4-utils 中的 `thrift_API.py`。其实不用也可以，像p4lang/tutorials/utils/mininet/appcontroller.py 中开子进程，用原生的 runtim_cli 直接写入也可。但就是想偷懒，毕竟人家封装的简单嘛。
+在控制器写流表时使用了：https://github.com/nsg-ethz/p4-utils 中的`sswitch_thrift_API.py` 和 `thrift_API.py`。其实不用也可以，像p4lang/tutorials/utils/mininet/appcontroller.py 中开子进程，用原生的 runtim_cli 直接写入也可。但就是想偷懒，毕竟人家封装的简单嘛。
+
+`thrift_API.py` 中似乎无法加载 key 为空的表，我对其进行了简单修改。
 
 碎碎念：
 
@@ -30,7 +32,8 @@ https://github.com/graytower/INT_PATH
 
   实际主机需要有两个物理网卡。首先释放一个网卡（假设叫 ens33）`sudo ifconfig ens33 0.0.0.0`, 将这个网口添加到 mininet 中的ovs交换机 ，一种方案是` os.popen('ovs-vsctl add-port s1 ens33')` 。将mininet中主机IP设置成与另一个网卡在同一网段，二者就可以ping通，可建立tcp连接。注意，如果你释放的是默认网卡，需要在实际主机上加一条路由条目，使到虚拟主机的数据包走另一个网卡。比如`route add -net 192.168.1.0/24 eth0`.
 
-* mininet 中一些小知识：
-  * mininet 主机默认共享本机 root 视角下的文件系统和 PID，但属于不同网络名称空间。本质上是一些主机用户进程。
-  * mininet 交换机一般实现是 Linux bridge 或者 Open vSwitch ，可以容易地在主机上更改。
+
+mininet 中一些小知识：
+* mininet 主机默认共享本机 root 视角下的文件系统和 PID，但属于不同网络名称空间。本质上是一些主机用户进程。
+* mininet 交换机一般实现是 Linux bridge 或者 Open vSwitch ，可以容易地在主机上更改。
 

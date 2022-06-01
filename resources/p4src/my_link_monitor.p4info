@@ -52,9 +52,9 @@ tables {
 }
 tables {
   preamble {
-    id: 33615084
-    name: "MyEgress.switch_id"
-    alias: "switch_id"
+    id: 33612891
+    name: "MyEgress.switchId"
+    alias: "switchId"
   }
   action_refs {
     id: 16777956

@@ -38,9 +38,9 @@ import json
 from functools import wraps
 import bmpy_utils as utils
 
-
 from bm_runtime.standard import Standard
 from bm_runtime.standard.ttypes import *
+
 try:
     from bm_runtime.simple_pre import SimplePre
 except:
@@ -56,6 +56,7 @@ def enum(type_name, *sequential, **named):
     @staticmethod
     def to_str(x):
         return reverse[x]
+
     enums['to_str'] = to_str
 
     @staticmethod
@@ -76,6 +77,7 @@ ResType = enum('ResType', 'table', 'action_prof', 'action', 'meter_array',
 def bytes_to_string(byte_array):
     form = 'B' * len(byte_array)
     return struct.pack(form, *byte_array)
+
 
 def table_error_name(x):
     return TableOperationErrorCode._VALUES_TO_NAMES[x]
@@ -247,7 +249,7 @@ class SwitchInfo():
                 with open(json_path, 'r') as f:
                     return f.read()
             else:
-                assert(standard_client is not None)
+                assert (standard_client is not None)
                 try:
                     json_cfg = standard_client.bm_get_config()
                 except:
@@ -261,7 +263,7 @@ class SwitchInfo():
             for h in j_headers:
                 if h["name"] == header_name:
                     return h["header_type"]
-            assert(0)
+            assert (0)
 
         def get_field_bitwidth(header_type, field_name, j_header_types):
             for h in j_header_types:
@@ -271,7 +273,7 @@ class SwitchInfo():
                     f, bw = t[0], t[1]
                     if f == field_name:
                         return bw
-            assert(0)
+            assert (0)
 
         self.reset_config()
         json_ = json.loads(json_str)
@@ -305,7 +307,7 @@ class SwitchInfo():
                     if "action_profile" in j_table:
                         action_prof = self.action_profs[j_table["action_profile"]]
                     else:  # for backward compatibility
-                        assert("act_prof_name" in j_table)
+                        assert ("act_prof_name" in j_table)
                         action_prof = ActionProf(j_table["act_prof_name"],
                                                  table.id_)
                         action_prof.with_selection = "selector" in j_table
@@ -314,24 +316,26 @@ class SwitchInfo():
                     action_prof.ref_cnt += 1
                     self.action_profs[j_table["act_prof_name"]] = action_prof
                     table.action_prof = action_prof
+                if len(j_table["key"]) > 0:
+                    for j_key in j_table["key"]:
+                        target = j_key["target"]
+                        match_type = MatchType.from_str(j_key["match_type"])
+                        if match_type == MatchType.VALID:
+                            field_name = target + "_valid"
+                            bitwidth = 1
+                        elif target[1] == "$valid$":
+                            field_name = target[0] + "_valid"
+                            bitwidth = 1
+                        else:
+                            field_name = ".".join(target)
+                            header_type = get_header_type(target[0],
+                                                          json_["headers"])
+                            bitwidth = get_field_bitwidth(header_type, target[1],
+                                                          json_["header_types"])
+                        table.key += [(field_name, match_type, bitwidth)]
 
-                for j_key in j_table["key"]:
-                    target = j_key["target"]
-                    match_type = MatchType.from_str(j_key["match_type"])
-                    if match_type == MatchType.VALID:
-                        field_name = target + "_valid"
-                        bitwidth = 1
-                    elif target[1] == "$valid$":
-                        field_name = target[0] + "_valid"
-                        bitwidth = 1
-                    else:
-                        field_name = ".".join(target)
-                        header_type = get_header_type(target[0],
-                                                      json_["headers"])
-                        bitwidth = get_field_bitwidth(header_type, target[1],
-                                                      json_["header_types"])
-                    table.key += [(field_name, match_type, bitwidth)]
-
+                        self.tables[j_table["name"]] = table
+                elif len(j_table["key"]) == 0:
                     self.tables[j_table["name"]] = table
 
         for j_meter in get_json_key("meter_arrays"):
@@ -346,7 +350,6 @@ class SwitchInfo():
             meter_array.rate_count = j_meter["rate_count"]
 
             self.meter_arrays[j_meter["name"]] = meter_array
-
 
         for j_counter in get_json_key("counter_arrays"):
             counter_array = CounterArray(j_counter["name"], j_counter["id"])
@@ -390,11 +393,11 @@ class SwitchInfo():
         # but that can be changed in the future if needed.
         suffix_count = Counter()
         for res_type, res_dict in [
-                (ResType.table, self.tables), (ResType.action_prof, self.action_profs),
-                (ResType.action, self.actions), (ResType.meter_array, self.meter_arrays),
-                (ResType.counter_array, self.counter_arrays),
-                (ResType.register_array, self.register_arrays),
-                (ResType.parse_vset, self.parse_vsets)]:
+            (ResType.table, self.tables), (ResType.action_prof, self.action_profs),
+            (ResType.action, self.actions), (ResType.meter_array, self.meter_arrays),
+            (ResType.counter_array, self.counter_arrays),
+            (ResType.register_array, self.register_arrays),
+            (ResType.parse_vset, self.parse_vsets)]:
             for name, res in res_dict.items():
                 suffix = None
                 for s in reversed(name.split('.')):
@@ -402,7 +405,7 @@ class SwitchInfo():
                     key = (res_type, suffix)
                     self.suffix_lookup_map[key] = res
                     suffix_count[key] += 1
-        #checks if a table is repeated, in that case it removes the only suffix entries
+        # checks if a table is repeated, in that case it removes the only suffix entries
         for key, c in suffix_count.items():
             if c > 1:
                 del self.suffix_lookup_map[key]
@@ -565,7 +568,7 @@ def parse_runtime_data(action, params):
                 "Error while parsing {} - {}".format(field, e)
             )
 
-    bitwidths = [bw for(_, bw) in action.runtime_data]
+    bitwidths = [bw for (_, bw) in action.runtime_data]
     byte_array = []
     for input_str, bitwidth in zip(params, bitwidths):
         byte_array += [bytes_to_string(parse_param_(input_str, bitwidth))]
@@ -582,7 +585,6 @@ _match_types_mapping = {
 
 
 def parse_match_key(table, key_fields):
-
     def parse_param_(field, bw):
         try:
             return parse_param(field, bw)
@@ -650,7 +652,7 @@ def parse_match_key(table, key_fields):
             param = BmMatchParam(type=param_type,
                                  range=BmMatchParamRange(start, end))
         else:
-            assert(0)
+            assert (0)
         params.append(param)
     return params
 
@@ -660,12 +662,12 @@ def printable_byte_str(s):
 
 
 def BmMatchParam_to_str(self):
-    return BmMatchParamType._VALUES_TO_NAMES[self.type] + "-" +\
-        (self.exact.to_str() if self.exact else "") +\
-        (self.lpm.to_str() if self.lpm else "") +\
-        (self.ternary.to_str() if self.ternary else "") +\
-        (self.valid.to_str() if self.valid else "") +\
-        (self.range.to_str() if self.range else "")
+    return BmMatchParamType._VALUES_TO_NAMES[self.type] + "-" + \
+           (self.exact.to_str() if self.exact else "") + \
+           (self.lpm.to_str() if self.lpm else "") + \
+           (self.ternary.to_str() if self.ternary else "") + \
+           (self.valid.to_str() if self.valid else "") + \
+           (self.range.to_str() if self.range else "")
 
 
 def BmMatchParamExact_to_str(self):
@@ -717,6 +719,7 @@ def parse_pvs_value(input_str, bitwidth):
         raise
     return bytes_to_string(v)
 
+
 # services is [(service_name, client_class), ...]
 
 
@@ -762,6 +765,7 @@ def handle_bad_input(f):
         except InvalidParseVSetOperation as e:
             error = ParseVSetOperationErrorCode._VALUES_TO_NAMES[e.code]
             print("Invalid parser value set operation ({})".format(error))
+
     return handle
 
 
@@ -784,6 +788,7 @@ def handle_bad_input_mc(f):
         except EType as e:
             error = Codes._VALUES_TO_NAMES[e.code]
             print("Invalid PRE operation ({})".format(error))
+
     return handle
 
 
@@ -808,8 +813,8 @@ def deprecated_act_prof(substitute, with_selection=False,
                 obj.check_indirect_ws(table)
             else:
                 obj.check_indirect(table)
-            assert(table.action_prof is not None)
-            assert(table.action_prof.ref_cnt > 0)
+            assert (table.action_prof is not None)
+            assert (table.action_prof.ref_cnt > 0)
             if strictly_deprecated and table.action_prof.ref_cnt > 1:
                 raise UIn_Error(
                     "Legacy command does not work with shared action profiles")
@@ -820,9 +825,12 @@ def deprecated_act_prof(substitute, with_selection=False,
                     "This is a deprecated command, use '{}' instead\n".format(
                         substitute))
             return substitute_fn(" ".join(args))
+
         # we add the handle_bad_input decorator "programatically"
         return handle_bad_input(wrapper)
+
     return deprecated_act_prof_
+
 
 # thrift does not support unsigned integers
 
@@ -866,7 +874,7 @@ def i32_to_hex(h):
 def parse_bool(s):
     if s == "true" or s == "True" or s == True:
         return True
-    if s == "false" or s  == "False" or s == False:
+    if s == "false" or s == "False" or s == False:
         return False
     try:
         s = int(s, 0)
@@ -906,6 +914,7 @@ class ThriftAPI(object):
         table_entries_match_to_handle (:py:class:`dict`): dictionary used to associate table matches
                                                           with the related handle.
     """
+
     @staticmethod
     def get_thrift_services(pre_type):
 
@@ -940,7 +949,7 @@ class ThriftAPI(object):
         # TODO: have a look at this
         self.table_entries_match_to_handle = self.create_match_to_handle_dict()
         self.load_table_entries_match_to_handle()
-        #self.table_multiple_names = self.load_table_to_all_names()
+        # self.table_multiple_names = self.load_table_to_all_names()
 
     def create_match_to_handle_dict(self):
 
@@ -1053,10 +1062,16 @@ class ThriftAPI(object):
 
     # for debugging
     def print_table_add(self, match_key, action_name, runtime_data):
-        print("{0:20} {1}".format(
-            "match key:",
-            "\t".join(d.to_str() for d in match_key)
-        ))
+        if len(match_key) == 0:
+            print("{0:20} {1}".format(
+                "match key:",
+                "No key"
+            ))
+        else:
+            print("{0:20} {1}".format(
+                "match key:",
+                "\t".join(d.to_str() for d in match_key)
+            ))
         print("{0:20} {1}".format("action:", action_name))
         print("{0:20} {1}".format(
             "runtime data:",
@@ -1092,7 +1107,7 @@ class ThriftAPI(object):
 
         d = {}
         for table_name in self.get_tables():
-            #check if short name exists
+            # check if short name exists
             short_table_name = table_name.split(".")[-1]
             key = ResType.table, short_table_name
             if key in self.switch_info.suffix_lookup_map:
@@ -1125,8 +1140,8 @@ class ThriftAPI(object):
               priority when performing a table lookup.
         """
 
-        #print table_name, action_name, match_keys, action_params
-        #import ipdb; ipdb.set_trace()
+        # print table_name, action_name, match_keys, action_params
+        # import ipdb; ipdb.set_trace()
 
         table = self.get_res("table", table_name, ResType.table)
         action = table.get_action(action_name, self.switch_info.suffix_lookup_map)
@@ -1153,18 +1168,18 @@ class ThriftAPI(object):
         runtime_data = self.parse_runtime_data(action, action_params)
         match_keys = parse_match_key(table, match_keys)
 
-        print("Adding entry to", MatchType.to_str(table.match_type), "match table", table_name)
+        # print("Adding entry to", MatchType.to_str(table.match_type), "match table", table_name)
 
         # disable, maybe a verbose CLI option?
-        self.print_table_add(match_keys, action_name, runtime_data)
+        # self.print_table_add(match_keys, action_name, runtime_data)
 
         entry_handle = self.client.bm_mt_add_entry(
             0, table.name, match_keys, action.name, runtime_data,
             BmAddEntryOptions(priority=priority)
         )
 
-        #save handle
-        #for sub_table_name in self.table_multiple_names[table.name]:
+        # save handle
+        # for sub_table_name in self.table_multiple_names[table.name]:
         try:
             entry_handle = int(entry_handle)
             self.table_entries_match_to_handle[table.name][str(match_keys)] = entry_handle
@@ -1250,7 +1265,7 @@ class ThriftAPI(object):
 
         print("Modifying entry", entry_handle, "for", MatchType.to_str(table.match_type), "match table", table_name)
 
-        #does not return anything
+        # does not return anything
         self.client.bm_mt_modify_entry(
             0, table.name, entry_handle, action.name, runtime_data
         )
@@ -1292,7 +1307,7 @@ class ThriftAPI(object):
             quiet (bool)      : disable verbose output
         """
 
-        #TODO: delete handle
+        # TODO: delete handle
 
         table = self.get_res("table", table_name, ResType.table)
         try:
@@ -1334,7 +1349,7 @@ class ThriftAPI(object):
     def check_indirect_ws(self, table):
         if table.type_ != TableType.indirect_ws:
             raise UIn_Error(
-                "Cannot run this command on non-indirect table,"\
+                "Cannot run this command on non-indirect table," \
                 " or on indirect table with no selector")
 
     def check_act_prof_ws(self, act_prof):
@@ -1366,7 +1381,6 @@ class ThriftAPI(object):
         if action is None:
             raise UIn_Error("Action profile '{}' has no action '{}'".format(
                 act_prof_name, action_name))
-
 
         runtime_data = self.parse_runtime_data(action, action_params)
         mbr_handle = self.client.bm_mt_act_prof_add_member(
@@ -1554,7 +1568,7 @@ class ThriftAPI(object):
         mgrp = self.get_mgrp(mgrp)
         print("Creating multicast group", mgrp)
         mgrp_hdl = self.mc_client.bm_mc_mgrp_create(0, mgrp)
-        assert(mgrp == mgrp_hdl)
+        assert (mgrp == mgrp_hdl)
 
         return mgrp_hdl
 
@@ -1701,7 +1715,7 @@ class ThriftAPI(object):
         self.check_has_pre()
         if self.pre_type != PreType.SimplePreLAG:
             raise UIn_Error(
-                "Cannot execute this command with this type of PRE,"\
+                "Cannot execute this command with this type of PRE," \
                 " SimplePreLAG is required"
             )
 
@@ -2012,7 +2026,6 @@ class ThriftAPI(object):
         register = self.get_res("register", register_name,
                                 ResType.register_array)
 
-
         try:
             if isinstance(index, list):
                 index = list(map(int, index))
@@ -2081,7 +2094,7 @@ class ThriftAPI(object):
             out_name_w = max(20, max([len(t[0]) for t in table.key]))
 
         def dump_exact(p):
-             return hexstr(p.exact.key)
+            return hexstr(p.exact.key)
 
         def dump_lpm(p):
             return "{}/{}".format(hexstr(p.lpm.key), p.lpm.prefix_length)
@@ -2096,6 +2109,7 @@ class ThriftAPI(object):
 
         def dump_valid(p):
             return "01" if p.valid.key else "00"
+
         pdumpers = {"exact": dump_exact, "lpm": dump_lpm,
                     "ternary": dump_ternary, "valid": dump_valid,
                     "range": dump_range}
@@ -2103,7 +2117,7 @@ class ThriftAPI(object):
         print("Dumping entry {}".format(hex(entry.entry_handle)))
         print("Match key:")
         for p, k in zip(entry.match_key, table.key):
-            assert(k[1] == p.type)
+            assert (k[1] == p.type)
             pdumper = pdumpers[MatchType.to_str(p.type)]
             print("* {0:{w}}: {1:10}{2}".format(
                 k[0], MatchType.to_str(p.type).upper(),
@@ -2199,11 +2213,10 @@ class ThriftAPI(object):
                                 ResType.action_prof)
         self._dump_act_prof(act_prof)
 
-
     def load_table_entries_match_to_handle(self):
 
         for table_name, table in list(self.get_tables().items()):
-            #remove the entries if any
+            # remove the entries if any
             self.table_entries_match_to_handle[table_name].clear()
             switch_entries = self.client.bm_mt_get_entries(0, table.name)
             for entry in switch_entries:
@@ -2227,9 +2240,9 @@ class ThriftAPI(object):
             print("**********")
             self.dump_one_entry(table, e)
 
-        if table.type_ == TableType.indirect or\
-           table.type_ == TableType.indirect_ws:
-            assert(table.action_prof is not None)
+        if table.type_ == TableType.indirect or \
+                table.type_ == TableType.indirect_ws:
+            assert (table.action_prof is not None)
             self._dump_act_prof(table.action_prof)
 
         # default entry
@@ -2420,7 +2433,8 @@ class ThriftAPI(object):
         with open(filename, 'w') as f:
             f.write(state)
 
-    def set_crc_parameters_common(self, name, polynomial, initial_remainder, final_xor_value, reflect_data, reflect_remainder, crc_width=16):
+    def set_crc_parameters_common(self, name, polynomial, initial_remainder, final_xor_value, reflect_data,
+                                  reflect_remainder, crc_width=16):
         conversion_fn = {16: hex_to_i16, 32: hex_to_i32}[crc_width]
         config_type = {16: BmCrc16Config, 32: BmCrc32Config}[crc_width]
         thrift_fn = {16: self.client.bm_set_crc16_custom_parameters,
@@ -2434,7 +2448,8 @@ class ThriftAPI(object):
         thrift_fn(0, name, crc_config)
 
     @handle_bad_input
-    def set_crc16_parameters(self, name, polynomial, initial_remainder, final_xor_value, reflect_data, reflect_remainder):
+    def set_crc16_parameters(self, name, polynomial, initial_remainder, final_xor_value, reflect_data,
+                             reflect_remainder):
         """Changes the parameters for a custom ``crc16`` hash.
         
         Args:
@@ -2445,10 +2460,12 @@ class ThriftAPI(object):
             reflect_data (bool)     : reflect data or do not
             reflect_remainder (bool): reflect remainder or do not
         """
-        self.set_crc_parameters_common(name, polynomial, initial_remainder, final_xor_value, reflect_data, reflect_remainder, 16)
+        self.set_crc_parameters_common(name, polynomial, initial_remainder, final_xor_value, reflect_data,
+                                       reflect_remainder, 16)
 
     @handle_bad_input
-    def set_crc32_parameters(self, name, polynomial, initial_remainder, final_xor_value, reflect_data, reflect_remainder):
+    def set_crc32_parameters(self, name, polynomial, initial_remainder, final_xor_value, reflect_data,
+                             reflect_remainder):
         """Changes the parameters for a custom ``crc32`` hash.
         
         Args:
@@ -2459,10 +2476,10 @@ class ThriftAPI(object):
             reflect_data (bool)     : reflect data or do not
             reflect_remainder (bool): reflect remainder or do not
         """
-        self.set_crc_parameters_common(name, polynomial, initial_remainder, final_xor_value, reflect_data, reflect_remainder, 32)
+        self.set_crc_parameters_common(name, polynomial, initial_remainder, final_xor_value, reflect_data,
+                                       reflect_remainder, 32)
 
-
-    #Global Variable Getters
+    # Global Variable Getters
     def get_tables(self):
         return self.switch_info.tables
 
@@ -2489,5 +2506,7 @@ class ThriftAPI(object):
 
     def get_suffix_lookup_map(self):
         return self.switch_info.suffix_lookup_map
+
+
 if __name__ == "__main__":
     print(PreType.SimplePreLAG)
