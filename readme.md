@@ -30,7 +30,7 @@ https://github.com/graytower/INT_PATH
 
 * mininet 中主机与所在实际主机通信：
 
-  实际主机需要有两个物理网卡。首先释放一个网卡（假设叫 ens33）`sudo ifconfig ens33 0.0.0.0`, 将这个网口添加到 mininet 中的ovs交换机 ，一种方案是` os.popen('ovs-vsctl add-port s1 ens33')` 。将mininet中主机IP设置成与另一个网卡在同一网段，二者就可以ping通，可建立tcp连接。注意，如果你释放的是默认网卡，需要在实际主机上加一条路由条目，使到虚拟主机的数据包走另一个网卡。比如`route add -net 192.168.1.0/24 eth0`.
+  实际主机需要有两个物理网卡。首先释放一个网卡（假设叫 ens33）`sudo ifconfig ens33 0.0.0.0`, 将这个网口添加到 mininet 中的ovs交换机 ，一种方案是` os.popen('ovs-vsctl add-port s1 ens33')` 。将mininet中主机IP设置成与另一个网卡在同一网段，二者就可以ping通，可建立tcp连接。注意，如果你释放的是默认网卡，需要在实际主机上加一条路由条目，使到虚拟主机的数据包走另一个网卡。比如`route add -net 192.168.1.0/24 eth0`.一旦ping不通，去检查主机路由表 `route -n`,大概率发现问题。
 
 
 mininet 中一些小知识：
