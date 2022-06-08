@@ -3,7 +3,7 @@ pkg_info {
 }
 tables {
   preamble {
-    id: 33616550
+    id: 48296614
     name: "MyIngress.doarp"
     alias: "doarp"
   }
@@ -20,16 +20,16 @@ tables {
     match_type: EXACT
   }
   action_refs {
-    id: 16786914
+    id: 28911074
   }
   action_refs {
-    id: 16800567
+    id: 21257015
   }
   size: 1024
 }
 tables {
   preamble {
-    id: 33574068
+    id: 37375156
     name: "MyIngress.ipv4_lpm"
     alias: "ipv4_lpm"
   }
@@ -40,47 +40,48 @@ tables {
     match_type: LPM
   }
   action_refs {
-    id: 16799317
+    id: 28792405
   }
   action_refs {
-    id: 16805608
+    id: 25652968
   }
   action_refs {
-    id: 16800567
+    id: 21257015
   }
   size: 1024
 }
 tables {
   preamble {
-    id: 33612891
+    id: 42591323
     name: "MyEgress.switchId"
     alias: "switchId"
   }
   action_refs {
-    id: 16777956
+    id: 27853540
   }
   action_refs {
-    id: 16800567
+    id: 21257015
   }
   size: 1024
 }
 actions {
   preamble {
-    id: 16800567
+    id: 21257015
     name: "NoAction"
     alias: "NoAction"
+    annotations: "@noWarn(\"unused\")"
   }
 }
 actions {
   preamble {
-    id: 16805608
+    id: 25652968
     name: "MyIngress.drop"
     alias: "drop"
   }
 }
 actions {
   preamble {
-    id: 16799317
+    id: 28792405
     name: "MyIngress.ipv4_forward"
     alias: "ipv4_forward"
   }
@@ -97,21 +98,21 @@ actions {
 }
 actions {
   preamble {
-    id: 16811714
+    id: 26904258
     name: "MyIngress.srcRoute_nhop"
     alias: "srcRoute_nhop"
   }
 }
 actions {
   preamble {
-    id: 16781426
+    id: 18485362
     name: "MyIngress.srcRoute_finish"
     alias: "srcRoute_finish"
   }
 }
 actions {
   preamble {
-    id: 16786914
+    id: 28911074
     name: "MyIngress.arpreply"
     alias: "arpreply"
   }
@@ -123,7 +124,7 @@ actions {
 }
 actions {
   preamble {
-    id: 16777956
+    id: 27853540
     name: "MyEgress.setSwitchId"
     alias: "setSwitchId"
   }
@@ -135,7 +136,7 @@ actions {
 }
 registers {
   preamble {
-    id: 369121087
+    id: 384128831
     name: "MyEgress.byte_cnt_reg"
     alias: "byte_cnt_reg"
   }
@@ -150,7 +151,7 @@ registers {
 }
 registers {
   preamble {
-    id: 369131808
+    id: 383418656
     name: "MyEgress.last_time_reg"
     alias: "last_time_reg"
   }

@@ -4,7 +4,8 @@
 import os
 import sys
 
-sys.path.append("/home/john/Downloads/int/")
+
+sys.path.append("/home/sdn/Downloads/int/")
 
 import copy
 import socket
@@ -84,9 +85,9 @@ class TelemetryController:
                                          match_keys=table["match_keys"], action_params=table["action_params"])
 
     def makeTopo(self):
-        topoMaker = TopoMaker(self)
+        self.topoMaker = TopoMaker(self)
         cleanMininet()
-        topoMaker.genTopo()
+        self.topoMaker.genTopo()
         for switch in self.switchList:
             """
                 The CLI include commands to program the multicast engine. 
@@ -107,9 +108,15 @@ class TelemetryController:
     def genControlLink(self):
         for host in self.clusterHeadHostList:
             print("try connecting to {} ...".format(host.controlIp))
-            tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            tcp_socket.connect((host.controlIp, Constants.CONTROL_PORT))
-            self.controlLink[host.id] = tcp_socket
+            try:
+                tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                tcp_socket.connect((host.controlIp, Constants.CONTROL_PORT))
+                print(host.controlIp, 'connected')
+                self.controlLink[host.id] = tcp_socket
+            except Exception:
+                print('socket gen failed', host.controlIp)
+                self.controlLink[host.id] = None
+
 
     def sendControlInfo(self, rev_pathList):
         # 先整理下要发送的数据
@@ -121,7 +128,7 @@ class TelemetryController:
             for num in range(length - 1):
                 port = self.getDevPortId(self.switchList[path[num]], self.switchList[path[num + 1]])
                 if port != -1:
-                    portList = portList.append(port)
+                    portList.append(port)
                 else:
                     raise Exception("交换机{}和{}间无连接".format(path[num], path[num + 1]))
             last_switch = self.switchList[path[length - 1]]
@@ -140,6 +147,7 @@ class TelemetryController:
                 controlMessage = header + payload
                 tcp_socket.send(controlMessage)
 
+
     def start(self):
         self.genSwitch()
         self.genHost()
@@ -153,8 +161,10 @@ class TelemetryController:
 
 if __name__ == "__main__":
     # java程序分两行输出，第一行打印路径列表，第二行打印簇头交换机列表。
-    try:
-        proc = subprocess.Popen("java -jar %s" % Constants.PATH_GENERATION, shell=True, stdout=subprocess.PIPE)
+
+    with subprocess.Popen("java -jar {0} {1} {2}".format(Constants.PATH_GENERATION,
+                                                         Constants.TOPOLOGY_FILE, Constants.NODE_NUM),
+                          shell=True, stdout=subprocess.PIPE) as proc:
         i = 0
         while True:
             info = proc.stdout.readline()
@@ -169,12 +179,9 @@ if __name__ == "__main__":
             elif i == 2:
                 topo = info
             i += 1
-
         pathList = eval(pathList)
         clusterHeadSwitchList = eval(clusterHeadSwitchList)
         topo = eval(topo)
-    finally:
-        proc.kill()
     myController = TelemetryController(topo, clusterHeadSwitchList)
     myController.start()
     myController.sendControlInfo(pathList)

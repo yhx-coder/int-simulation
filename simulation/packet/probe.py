@@ -8,7 +8,8 @@ from scapy.fields import BitField, IntField
 from scapy.layers.l2 import Ether
 from scapy.packet import Packet, bind_layers
 
-TYPE_PROBE = 0x102
+TYPE_PROBE = 0x1234
+TYPE_PROBE2 = 0x1235
 
 
 class SrcRoute(Packet):
@@ -29,7 +30,7 @@ class IntData(Packet):
 
 
 bind_layers(Ether, SrcRoute, type=TYPE_PROBE)
-bind_layers(Ether, IntData, type=TYPE_PROBE)
+bind_layers(Ether, IntData, type=TYPE_PROBE2)
 bind_layers(SrcRoute, SrcRoute, bos=0)
 bind_layers(SrcRoute, IntData, bos=1)
 bind_layers(IntData, IntData)

@@ -28,11 +28,9 @@ operations by connecting to the *Thrift* server running on a capable switch. The
 main difference between this code and the original one is that this module is an API,
 whereas the other is a client.
 """
-from __future__ import print_function
 
 from collections import Counter
 import os
-import sys
 import struct
 import json
 from functools import wraps

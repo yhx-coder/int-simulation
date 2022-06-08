@@ -4,7 +4,8 @@
 
 const bit<16> TYPE_IPV4  = 0x800;
 const bit<16> TYPE_ARP  = 0x806;
-const bit<16> TYPE_PROBE = 0x102;
+const bit<16> TYPE_PROBE = 0x1234;
+const bit<16> TYPE_PROBE2 = 0x1235;
 
 #define MAX_HOPS 5
 #define MAX_PORTS 16
@@ -79,7 +80,7 @@ struct headers {
     ethernet_t              ethernet;
     arp_t                   arp;
     srcRoute_t[MAX_HOPS]    srcRoutes;
-    int_data_t              intdata;
+    int_data_t[MAX_HOPS]    intdata;
     ipv4_t                  ipv4;
 }
 
@@ -160,7 +161,7 @@ control MyIngress(inout headers hdr,
 
     // 不在最后将类型改回ipv4，sniff 就看不到首部了，只能看到负载，导致只能用原始socket接收，有点麻烦。
     action srcRoute_finish() {
-        hdr.ethernet.etherType = TYPE_IPV4;
+        hdr.ethernet.etherType = TYPE_PROBE2;
     }
 
     action arpreply(bit<48>repmac) {
@@ -261,20 +262,22 @@ control MyEgress(inout headers hdr,
         new_byte_cnt = (hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt;
         byte_cnt_reg.write((bit<32>)standard_metadata.egress_port, new_byte_cnt);
 
-        if (hdr.ethernet.etherType == TYPE_PROBE) {
-            hdr.intdata.setValid();
-            hdr.intdata.switch_id = meta.switch_id;
-            hdr.intdata.ingress_port = standard_metadata.ingress_port;
-            hdr.intdata.egress_port = standard_metadata.egress_port;
-            hdr.intdata.hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp;
-            hdr.intdata.deq_qdepth = standard_metadata.deq_qdepth;
-            hdr.intdata.deq_timedelta = standard_metadata.deq_timedelta;
-            hdr.intdata.byte_cnt = byte_cnt;
+        if (hdr.ethernet.etherType == TYPE_PROBE || hdr.ethernet.etherType == TYPE_PROBE2) {
+            hdr.intdata.push_front(1);
+            hdr.intdata[0].setValid();
+            hdr.intdata[0].setValid();
+            hdr.intdata[0].switch_id = meta.switch_id;
+            hdr.intdata[0].ingress_port = standard_metadata.ingress_port;
+            hdr.intdata[0].egress_port = standard_metadata.egress_port;
+            hdr.intdata[0].hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp;
+            hdr.intdata[0].deq_qdepth = standard_metadata.deq_qdepth;
+            hdr.intdata[0].deq_timedelta = standard_metadata.deq_timedelta;
+            hdr.intdata[0].byte_cnt = byte_cnt;
             // read / update the last_time_reg
             last_time_reg.read(last_time, (bit<32>)standard_metadata.egress_port);
             last_time_reg.write((bit<32>)standard_metadata.egress_port, cur_time);
-            hdr.intdata.last_time = last_time;
-            hdr.intdata.cur_time = cur_time;
+            hdr.intdata[0].last_time = last_time;
+            hdr.intdata[0].cur_time = cur_time;
         }
     }
 

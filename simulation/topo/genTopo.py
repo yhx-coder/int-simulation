@@ -6,7 +6,7 @@ import os
 from mininet.cli import CLI
 from mininet.link import TCLink
 from mininet.net import Mininet
-from mininet.node import OVSSwitch
+from mininet.node import OVSSwitch, Ryu
 from mininet.topo import Topo
 
 from simulation.config.constants import Constants
@@ -69,10 +69,18 @@ class TopoMaker:
             hostName = host.type + str(host.id)
             netHost = self.net.getNodeByName(hostName)
             self.net.addLink(netHost, s999)
-            action = "ip addr add %s/24 dev %s" % (host.controlIp, hostName + "-eth1")
+            action = "ip addr add %s/24 dev %s" % (host.controlIp, hostName + "-eth2")
             netHost.cmd(action)
-            netHost.cmd("python3 ../../packet/send_probe.py &")
-            netHost.cmd("python3 ../../packet/receive_probe.py &")
+            netHost.cmd("python3 ../packet/send_probe.py &")
+            netHost.cmd("python3 ../packet/receive_probe.py &")
+
+            netHost.cmd(
+                "sysctl -w net.ipv6.conf.all.disable_ipv6=1")
+            netHost.cmd(
+                "sysctl -w net.ipv6.conf.default.disable_ipv6=1")
+            netHost.cmd(
+                "sysctl -w net.ipv6.conf.lo.disable_ipv6=1")
+
         self.net.start()
         os.popen("ovs-vsctl add-port s999 %s" % Constants.NETWORK_INTERFACE_TO_RELEASE)
 

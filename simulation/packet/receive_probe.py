@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 # @author: ming
 # @date: 2022/5/20 16:24
+import sys
+
+sys.path.append("/home/sdn/Downloads/int/")
 import time
 
 import pymysql
@@ -8,16 +11,16 @@ from scapy.sendrecv import sniff
 
 import probe
 
-conn = pymysql.connect(user="root", password="root", host="localhost", database="cfint")
-cursor = conn.cursor()
 
+conn = pymysql.connect(user="root", password="root",  database="cfint",unix_socket="/var/run/mysqld/mysqld.sock")
+cursor = conn.cursor()
 
 def pktHandler(pkt):
     """
     和时间有关的都用微秒
     :param pkt:
     """
-    if probe.IntData in pkt:
+    if pkt.type == probe.TYPE_PROBE2:
         packetMeta = bytes(pkt.getlayer("Raw"))
         packetMeta = str(packetMeta, "utf-8")
         packetId, deliveryTime = packetMeta.split("_")
@@ -53,6 +56,9 @@ def pktHandler(pkt):
                 cursor.commit()
             pkt = pkt.payload
 
+def handle(pkt):
+
+    pkt.show()
 
 iface = "eth0"
-sniff(iface=iface, prn=lambda x: pktHandler(x))
+sniff(iface=iface, prn=lambda x: handle(x))

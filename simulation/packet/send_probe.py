@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # @author: ming
 # @date: 2022/5/20 14:36
-import json
+import sys
+
+
+sys.path.append("/home/sdn/Downloads/int/")
 import struct
 
 from concurrent.futures import ThreadPoolExecutor
@@ -19,7 +22,7 @@ from simulation.config.constants import Constants
 def get_if():
     ifs = get_if_list()
     iface = None  # "h1-eth0"
-    for i in get_if_list():
+    for i in ifs:
         if "eth0" in i:
             iface = i
             break
@@ -40,6 +43,7 @@ def rcvControlMessage(controlPort):
     dataBuffer = bytes()
 
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
     tcp_socket.bind(("", controlPort))
     tcp_socket.listen(1)
     conn, addr = tcp_socket.accept()
