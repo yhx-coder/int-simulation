@@ -32,7 +32,8 @@ class MyTopo(Topo):
             mininetHostDic[host.id] = mininetHost
 
         # 1000 Mbps, 1ms delay, 2% loss, 1000 packet queue
-        linkOpts = dict(bw=1000, delay='1ms', loss=10, max_queue_size=1000, use_htb=True)
+        # linkOpts = dict(bw=1000, delay='1ms', loss=10, max_queue_size=1000, use_htb=True)
+        linkOpts = dict(bw=1000)
 
         for i in range(main.totalNum):
             for j in range(main.switchList[i].totalPorts):

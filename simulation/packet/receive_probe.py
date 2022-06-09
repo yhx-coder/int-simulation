@@ -57,8 +57,8 @@ def pktHandler(pkt):
             pkt = pkt.payload
 
 def handle(pkt):
-
-    pkt.show()
+    if pkt.type == 0x812:
+        pkt.show2()
 
 iface = "eth0"
 sniff(iface=iface, prn=lambda x: handle(x))

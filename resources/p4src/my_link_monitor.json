@@ -12,8 +12,10 @@
         ["byte_cnt_0", 32, false],
         ["last_time_0", 48, false],
         ["tmp", 32, false],
-        ["userMetadata.switch_id", 11, false],
-        ["_padding_0", 5, false]
+        ["userMetadata._switch_id0", 10, false],
+        ["userMetadata._egress_spec1", 8, false],
+        ["userMetadata._parser_metadata_remaining2", 8, false],
+        ["_padding_0", 6, false]
       ]
     },
     {
@@ -64,8 +66,15 @@
       ]
     },
     {
-      "name" : "ipv4_t",
+      "name" : "probe_t",
       "id" : 4,
+      "fields" : [
+        ["hop_cnt", 8, false]
+      ]
+    },
+    {
+      "name" : "ipv4_t",
+      "id" : 5,
       "fields" : [
         ["version", 4, false],
         ["ihl", 4, false],
@@ -82,18 +91,11 @@
       ]
     },
     {
-      "name" : "srcRoute_t",
-      "id" : 5,
-      "fields" : [
-        ["bos", 1, false],
-        ["port", 7, false]
-      ]
-    },
-    {
       "name" : "int_data_t",
       "id" : 6,
       "fields" : [
-        ["switch_id", 11, false],
+        ["bos", 1, false],
+        ["switch_id", 10, false],
         ["ingress_port", 9, false],
         ["egress_port", 9, false],
         ["hop_latency", 48, false],
@@ -102,6 +104,13 @@
         ["byte_cnt", 32, false],
         ["last_time", 48, false],
         ["cur_time", 48, false]
+      ]
+    },
+    {
+      "name" : "srcRoute_t",
+      "id" : 7,
+      "fields" : [
+        ["port", 8, false]
       ]
     }
   ],
@@ -135,97 +144,104 @@
       "pi_omit" : true
     },
     {
-      "name" : "ipv4",
+      "name" : "probe",
       "id" : 4,
+      "header_type" : "probe_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "ipv4",
+      "id" : 5,
       "header_type" : "ipv4_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "srcRoutes[0]",
-      "id" : 5,
-      "header_type" : "srcRoute_t",
-      "metadata" : false,
-      "pi_omit" : true
-    },
-    {
-      "name" : "srcRoutes[1]",
+      "name" : "int_data[0]",
       "id" : 6,
-      "header_type" : "srcRoute_t",
+      "header_type" : "int_data_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "srcRoutes[2]",
+      "name" : "int_data[1]",
       "id" : 7,
-      "header_type" : "srcRoute_t",
+      "header_type" : "int_data_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "srcRoutes[3]",
+      "name" : "int_data[2]",
       "id" : 8,
-      "header_type" : "srcRoute_t",
+      "header_type" : "int_data_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "srcRoutes[4]",
+      "name" : "int_data[3]",
       "id" : 9,
-      "header_type" : "srcRoute_t",
+      "header_type" : "int_data_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "intdata[0]",
+      "name" : "int_data[4]",
       "id" : 10,
       "header_type" : "int_data_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "intdata[1]",
+      "name" : "srcRoutes[0]",
       "id" : 11,
-      "header_type" : "int_data_t",
+      "header_type" : "srcRoute_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "intdata[2]",
+      "name" : "srcRoutes[1]",
       "id" : 12,
-      "header_type" : "int_data_t",
+      "header_type" : "srcRoute_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "intdata[3]",
+      "name" : "srcRoutes[2]",
       "id" : 13,
-      "header_type" : "int_data_t",
+      "header_type" : "srcRoute_t",
       "metadata" : false,
       "pi_omit" : true
     },
     {
-      "name" : "intdata[4]",
+      "name" : "srcRoutes[3]",
       "id" : 14,
-      "header_type" : "int_data_t",
+      "header_type" : "srcRoute_t",
+      "metadata" : false,
+      "pi_omit" : true
+    },
+    {
+      "name" : "srcRoutes[4]",
+      "id" : 15,
+      "header_type" : "srcRoute_t",
       "metadata" : false,
       "pi_omit" : true
     }
   ],
   "header_stacks" : [
     {
-      "name" : "srcRoutes",
+      "name" : "int_data",
       "id" : 0,
-      "header_type" : "srcRoute_t",
-      "size" : 5,
-      "header_ids" : [5, 6, 7, 8, 9]
-    },
-    {
-      "name" : "intdata",
-      "id" : 1,
       "header_type" : "int_data_t",
       "size" : 5,
-      "header_ids" : [10, 11, 12, 13, 14]
+      "header_ids" : [6, 7, 8, 9, 10]
+    },
+    {
+      "name" : "srcRoutes",
+      "id" : 1,
+      "header_type" : "srcRoute_t",
+      "size" : 5,
+      "header_ids" : [11, 12, 13, 14, 15]
     }
   ],
   "header_union_types" : [],
@@ -277,9 +293,9 @@
             },
             {
               "type" : "hexstr",
-              "value" : "0x1234",
+              "value" : "0x0812",
               "mask" : null,
-              "next_state" : "parse_srcRouting"
+              "next_state" : "parse_probe"
             },
             {
               "type" : "default",
@@ -344,14 +360,85 @@
           "transition_key" : []
         },
         {
-          "name" : "parse_srcRouting",
+          "name" : "parse_probe",
           "id" : 3,
           "parser_ops" : [
             {
               "parameters" : [
                 {
+                  "type" : "regular",
+                  "value" : "probe"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "userMetadata._parser_metadata_remaining2"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["probe", "hop_cnt"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0x01"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x00",
+              "mask" : null,
+              "next_state" : "parse_srcRoutes"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_data"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "field",
+              "value" : ["probe", "hop_cnt"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_int_data",
+          "id" : 4,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
                   "type" : "stack",
-                  "value" : "srcRoutes"
+                  "value" : "int_data"
                 }
               ],
               "op" : "extract"
@@ -362,19 +449,106 @@
               "type" : "hexstr",
               "value" : "0x01",
               "mask" : null,
+              "next_state" : "parse_srcRoutes"
+            },
+            {
+              "type" : "default",
+              "value" : null,
+              "mask" : null,
+              "next_state" : "parse_int_data"
+            }
+          ],
+          "transition_key" : [
+            {
+              "type" : "stack_field",
+              "value" : ["int_data", "bos"]
+            }
+          ]
+        },
+        {
+          "name" : "parse_srcRoutes",
+          "id" : 5,
+          "parser_ops" : [
+            {
+              "parameters" : [
+                {
+                  "type" : "stack",
+                  "value" : "srcRoutes"
+                }
+              ],
+              "op" : "extract"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "userMetadata._parser_metadata_remaining2"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "&",
+                      "left" : {
+                        "type" : "expression",
+                        "value" : {
+                          "op" : "+",
+                          "left" : {
+                            "type" : "field",
+                            "value" : ["scalars", "userMetadata._parser_metadata_remaining2"]
+                          },
+                          "right" : {
+                            "type" : "hexstr",
+                            "value" : "0xff"
+                          }
+                        }
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0xff"
+                      }
+                    }
+                  }
+                }
+              ],
+              "op" : "set"
+            },
+            {
+              "parameters" : [
+                {
+                  "type" : "field",
+                  "value" : ["scalars", "userMetadata._egress_spec1"]
+                },
+                {
+                  "type" : "expression",
+                  "value" : {
+                    "type" : "stack_field",
+                    "value" : ["srcRoutes", "port"]
+                  }
+                }
+              ],
+              "op" : "set"
+            }
+          ],
+          "transitions" : [
+            {
+              "type" : "hexstr",
+              "value" : "0x00",
+              "mask" : null,
               "next_state" : null
             },
             {
               "type" : "default",
               "value" : null,
               "mask" : null,
-              "next_state" : "parse_srcRouting"
+              "next_state" : "parse_srcRoutes"
             }
           ],
           "transition_key" : [
             {
-              "type" : "stack_field",
-              "value" : ["srcRoutes", "bos"]
+              "type" : "field",
+              "value" : ["scalars", "userMetadata._parser_metadata_remaining2"]
             }
           ]
         }
@@ -388,11 +562,11 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 314,
+        "line" : 338,
         "column" : 8,
         "source_fragment" : "MyDeparser"
       },
-      "order" : ["ethernet", "arp", "srcRoutes[0]", "srcRoutes[1]", "srcRoutes[2]", "srcRoutes[3]", "srcRoutes[4]", "intdata[0]", "intdata[1]", "intdata[2]", "intdata[3]", "intdata[4]", "ipv4"],
+      "order" : ["ethernet", "arp", "probe", "int_data[0]", "int_data[1]", "int_data[2]", "int_data[3]", "int_data[4]", "srcRoutes[0]", "srcRoutes[1]", "srcRoutes[2]", "srcRoutes[3]", "srcRoutes[4]", "ipv4"],
       "primitives" : []
     }
   ],
@@ -404,7 +578,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 231,
+        "line" : 250,
         "column" : 26,
         "source_fragment" : "byte_cnt_reg"
       },
@@ -416,7 +590,7 @@
       "id" : 1,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 233,
+        "line" : 252,
         "column" : 25,
         "source_fragment" : "last_time_reg"
       },
@@ -430,7 +604,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 292,
+        "line" : 316,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },
@@ -512,7 +686,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 147,
+            "line" : 179,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -534,7 +708,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 147,
+            "line" : 179,
             "column" : 8,
             "source_fragment" : "mark_to_drop(standard_metadata)"
           }
@@ -582,7 +756,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 151,
+            "line" : 183,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = (bit<9>)port"
           }
@@ -601,7 +775,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 152,
+            "line" : 184,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr = hdr.ethernet.dstAddr"
           }
@@ -620,7 +794,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 153,
+            "line" : 185,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr = dstAddr"
           }
@@ -662,7 +836,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 154,
+            "line" : 186,
             "column" : 8,
             "source_fragment" : "hdr.ipv4.ttl = hdr.ipv4.ttl - 1"
           }
@@ -670,92 +844,8 @@
       ]
     },
     {
-      "name" : "MyIngress.srcRoute_nhop",
-      "id" : 5,
-      "runtime_data" : [],
-      "primitives" : [
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["standard_metadata", "egress_spec"]
-            },
-            {
-              "type" : "expression",
-              "value" : {
-                "type" : "expression",
-                "value" : {
-                  "op" : "&",
-                  "left" : {
-                    "type" : "field",
-                    "value" : ["srcRoutes[0]", "port"]
-                  },
-                  "right" : {
-                    "type" : "hexstr",
-                    "value" : "0x01ff"
-                  }
-                }
-              }
-            }
-          ],
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 158,
-            "column" : 8,
-            "source_fragment" : "standard_metadata.egress_spec = (bit<9>)hdr.srcRoutes[0].port"
-          }
-        },
-        {
-          "op" : "pop",
-          "parameters" : [
-            {
-              "type" : "header_stack",
-              "value" : "srcRoutes"
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x1"
-            }
-          ],
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 159,
-            "column" : 8,
-            "source_fragment" : "hdr.srcRoutes.pop_front(1)"
-          }
-        }
-      ]
-    },
-    {
-      "name" : "MyIngress.srcRoute_finish",
-      "id" : 6,
-      "runtime_data" : [],
-      "primitives" : [
-        {
-          "op" : "assign",
-          "parameters" : [
-            {
-              "type" : "field",
-              "value" : ["ethernet", "etherType"]
-            },
-            {
-              "type" : "hexstr",
-              "value" : "0x1235"
-            }
-          ],
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 8,
-            "column" : 28,
-            "source_fragment" : "0x1235; ..."
-          }
-        }
-      ]
-    },
-    {
       "name" : "MyIngress.arpreply",
-      "id" : 7,
+      "id" : 5,
       "runtime_data" : [
         {
           "name" : "repmac",
@@ -777,7 +867,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 168,
+            "line" : 190,
             "column" : 8,
             "source_fragment" : "standard_metadata.egress_spec = standard_metadata.ingress_port"
           }
@@ -796,7 +886,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 169,
+            "line" : 191,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.srcAddr=repmac"
           }
@@ -815,7 +905,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 170,
+            "line" : 192,
             "column" : 8,
             "source_fragment" : "hdr.ethernet.dstAddr=hdr.arp.arpSha"
           }
@@ -834,7 +924,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 172,
+            "line" : 194,
             "column" : 8,
             "source_fragment" : "tempip=hdr.arp.arpSpa"
           }
@@ -853,7 +943,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 173,
+            "line" : 195,
             "column" : 8,
             "source_fragment" : "hdr.arp.arpSpa=hdr.arp.arpTpa"
           }
@@ -872,7 +962,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 174,
+            "line" : 196,
             "column" : 8,
             "source_fragment" : "hdr.arp.arpTpa=tempip"
           }
@@ -891,7 +981,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 175,
+            "line" : 197,
             "column" : 8,
             "source_fragment" : "hdr.arp.arpTha=hdr.arp.arpSha"
           }
@@ -910,7 +1000,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 176,
+            "line" : 198,
             "column" : 8,
             "source_fragment" : "hdr.arp.arpSha=repmac"
           }
@@ -918,18 +1008,99 @@
       ]
     },
     {
+      "name" : "my_link_monitor230",
+      "id" : 6,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["standard_metadata", "egress_spec"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "field",
+                    "value" : ["scalars", "userMetadata._egress_spec1"]
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0x01ff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 230,
+            "column" : 12,
+            "source_fragment" : "standard_metadata.egress_spec = (bit<9>)meta.egress_spec"
+          }
+        },
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["probe", "hop_cnt"]
+            },
+            {
+              "type" : "expression",
+              "value" : {
+                "type" : "expression",
+                "value" : {
+                  "op" : "&",
+                  "left" : {
+                    "type" : "expression",
+                    "value" : {
+                      "op" : "+",
+                      "left" : {
+                        "type" : "field",
+                        "value" : ["probe", "hop_cnt"]
+                      },
+                      "right" : {
+                        "type" : "hexstr",
+                        "value" : "0x01"
+                      }
+                    }
+                  },
+                  "right" : {
+                    "type" : "hexstr",
+                    "value" : "0xff"
+                  }
+                }
+              }
+            }
+          ],
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 231,
+            "column" : 12,
+            "source_fragment" : "hdr.probe.hop_cnt = hdr.probe.hop_cnt + 1"
+          }
+        }
+      ]
+    },
+    {
       "name" : "NoAction",
-      "id" : 8,
+      "id" : 7,
       "runtime_data" : [],
       "primitives" : []
     },
     {
       "name" : "MyEgress.setSwitchId",
-      "id" : 9,
+      "id" : 8,
       "runtime_data" : [
         {
           "name" : "switch_id",
-          "bitwidth" : 11
+          "bitwidth" : 10
         }
       ],
       "primitives" : [
@@ -938,7 +1109,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["scalars", "userMetadata.switch_id"]
+              "value" : ["scalars", "userMetadata._switch_id0"]
             },
             {
               "type" : "runtime_data",
@@ -947,7 +1118,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 240,
+            "line" : 259,
             "column" : 8,
             "source_fragment" : "meta.switch_id = switch_id"
           }
@@ -955,8 +1126,8 @@
       ]
     },
     {
-      "name" : "my_link_monitor262",
-      "id" : 10,
+      "name" : "my_link_monitor281",
+      "id" : 9,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -973,7 +1144,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 262,
+            "line" : 281,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           }
@@ -981,8 +1152,8 @@
       ]
     },
     {
-      "name" : "my_link_monitor262_0",
-      "id" : 11,
+      "name" : "my_link_monitor281_0",
+      "id" : 10,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -999,7 +1170,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 262,
+            "line" : 281,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           }
@@ -1007,8 +1178,8 @@
       ]
     },
     {
-      "name" : "my_link_monitor259",
-      "id" : 12,
+      "name" : "my_link_monitor278",
+      "id" : 11,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -1038,7 +1209,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 259,
+            "line" : 278,
             "column" : 36,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1061,7 +1232,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 259,
+            "line" : 278,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.read(byte_cnt, (bit<32>)standard_metadata.egress_port)"
           }
@@ -1103,7 +1274,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 260,
+            "line" : 279,
             "column" : 8,
             "source_fragment" : "byte_cnt = byte_cnt + standard_metadata.packet_length"
           }
@@ -1111,8 +1282,60 @@
       ]
     },
     {
-      "name" : "my_link_monitor266",
+      "name" : "my_link_monitor288",
+      "id" : 12,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_data[0]", "bos"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x01"
+            }
+          ],
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 288,
+            "column" : 16,
+            "source_fragment" : "hdr.int_data[0].bos = 1"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "my_link_monitor291",
       "id" : 13,
+      "runtime_data" : [],
+      "primitives" : [
+        {
+          "op" : "assign",
+          "parameters" : [
+            {
+              "type" : "field",
+              "value" : ["int_data[0]", "bos"]
+            },
+            {
+              "type" : "hexstr",
+              "value" : "0x00"
+            }
+          ],
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 291,
+            "column" : 16,
+            "source_fragment" : "hdr.int_data[0].bos = 0"
+          }
+        }
+      ]
+    },
+    {
+      "name" : "my_link_monitor285",
+      "id" : 14,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -1120,7 +1343,7 @@
           "parameters" : [
             {
               "type" : "header_stack",
-              "value" : "intdata"
+              "value" : "int_data"
             },
             {
               "type" : "hexstr",
@@ -1129,9 +1352,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 266,
+            "line" : 285,
             "column" : 12,
-            "source_fragment" : "hdr.intdata.push_front(1)"
+            "source_fragment" : "hdr.int_data.push_front(1)"
           }
         },
         {
@@ -1139,48 +1362,40 @@
           "parameters" : [
             {
               "type" : "header",
-              "value" : "intdata[0]"
+              "value" : "int_data[0]"
             }
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 267,
+            "line" : 286,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].setValid()"
+            "source_fragment" : "hdr.int_data[0].setValid()"
           }
-        },
-        {
-          "op" : "add_header",
-          "parameters" : [
-            {
-              "type" : "header",
-              "value" : "intdata[0]"
-            }
-          ],
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 268,
-            "column" : 12,
-            "source_fragment" : "hdr.intdata[0].setValid()"
-          }
-        },
+        }
+      ]
+    },
+    {
+      "name" : "my_link_monitor293",
+      "id" : 15,
+      "runtime_data" : [],
+      "primitives" : [
         {
           "op" : "assign",
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "switch_id"]
+              "value" : ["int_data[0]", "switch_id"]
             },
             {
               "type" : "field",
-              "value" : ["scalars", "userMetadata.switch_id"]
+              "value" : ["scalars", "userMetadata._switch_id0"]
             }
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 269,
+            "line" : 293,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].switch_id = meta.switch_id"
+            "source_fragment" : "hdr.int_data[0].switch_id = meta"
           }
         },
         {
@@ -1188,7 +1403,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "ingress_port"]
+              "value" : ["int_data[0]", "ingress_port"]
             },
             {
               "type" : "field",
@@ -1197,9 +1412,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 270,
+            "line" : 294,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].ingress_port = standard_metadata.ingress_port"
+            "source_fragment" : "hdr.int_data[0].ingress_port = standard_metadata.ingress_port"
           }
         },
         {
@@ -1207,7 +1422,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "egress_port"]
+              "value" : ["int_data[0]", "egress_port"]
             },
             {
               "type" : "field",
@@ -1216,9 +1431,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 271,
+            "line" : 295,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].egress_port = standard_metadata.egress_port"
+            "source_fragment" : "hdr.int_data[0].egress_port = standard_metadata.egress_port"
           }
         },
         {
@@ -1226,7 +1441,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "hop_latency"]
+              "value" : ["int_data[0]", "hop_latency"]
             },
             {
               "type" : "expression",
@@ -1258,9 +1473,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 272,
+            "line" : 296,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp"
+            "source_fragment" : "hdr.int_data[0].hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp"
           }
         },
         {
@@ -1268,7 +1483,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "deq_qdepth"]
+              "value" : ["int_data[0]", "deq_qdepth"]
             },
             {
               "type" : "field",
@@ -1277,9 +1492,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 273,
+            "line" : 297,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].deq_qdepth = standard_metadata.deq_qdepth"
+            "source_fragment" : "hdr.int_data[0].deq_qdepth = standard_metadata.deq_qdepth"
           }
         },
         {
@@ -1287,7 +1502,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "deq_timedelta"]
+              "value" : ["int_data[0]", "deq_timedelta"]
             },
             {
               "type" : "field",
@@ -1296,9 +1511,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 274,
+            "line" : 298,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].deq_timedelta = standard_metadata.deq_timedelta"
+            "source_fragment" : "hdr.int_data[0].deq_timedelta = standard_metadata.deq_timedelta"
           }
         },
         {
@@ -1306,7 +1521,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "byte_cnt"]
+              "value" : ["int_data[0]", "byte_cnt"]
             },
             {
               "type" : "field",
@@ -1315,9 +1530,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 275,
+            "line" : 299,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].byte_cnt = byte_cnt"
+            "source_fragment" : "hdr.int_data[0].byte_cnt = byte_cnt"
           }
         },
         {
@@ -1347,7 +1562,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 277,
+            "line" : 301,
             "column" : 42,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1370,7 +1585,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 277,
+            "line" : 301,
             "column" : 12,
             "source_fragment" : "last_time_reg.read(last_time, (bit<32>)standard_metadata.egress_port)"
           }
@@ -1402,7 +1617,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 278,
+            "line" : 302,
             "column" : 32,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1425,7 +1640,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 278,
+            "line" : 302,
             "column" : 12,
             "source_fragment" : "last_time_reg.write((bit<32>)standard_metadata.egress_port, cur_time)"
           }
@@ -1435,7 +1650,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "last_time"]
+              "value" : ["int_data[0]", "last_time"]
             },
             {
               "type" : "field",
@@ -1444,9 +1659,9 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 279,
+            "line" : 303,
             "column" : 12,
-            "source_fragment" : "hdr.intdata[0].last_time = last_time"
+            "source_fragment" : "hdr.int_data[0].last_time = last_time"
           }
         },
         {
@@ -1454,7 +1669,7 @@
           "parameters" : [
             {
               "type" : "field",
-              "value" : ["intdata[0]", "cur_time"]
+              "value" : ["int_data[0]", "cur_time"]
             },
             {
               "type" : "field",
@@ -1463,7 +1678,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 257,
+            "line" : 276,
             "column" : 26,
             "source_fragment" : "standard_metadata.egress_global_timestamp; ..."
           }
@@ -1471,8 +1686,8 @@
       ]
     },
     {
-      "name" : "my_link_monitor263",
-      "id" : 14,
+      "name" : "my_link_monitor282",
+      "id" : 16,
       "runtime_data" : [],
       "primitives" : [
         {
@@ -1502,7 +1717,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 263,
+            "line" : 282,
             "column" : 27,
             "source_fragment" : "(bit<32>)standard_metadata.egress_port"
           }
@@ -1525,7 +1740,7 @@
           ],
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 263,
+            "line" : 282,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.write((bit<32>)standard_metadata.egress_port, new_byte_cnt)"
           }
@@ -1539,7 +1754,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 142,
+        "line" : 174,
         "column" : 8,
         "source_fragment" : "MyIngress"
       },
@@ -1550,7 +1765,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 191,
+            "line" : 213,
             "column" : 10,
             "source_fragment" : "ipv4_lpm"
           },
@@ -1584,13 +1799,13 @@
           }
         },
         {
-          "name" : "tbl_srcRoute_finish",
+          "name" : "tbl_my_link_monitor230",
           "id" : 1,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 210,
-            "column" : 16,
-            "source_fragment" : "srcRoute_finish()"
+            "line" : 230,
+            "column" : 42,
+            "source_fragment" : "= (bit<9>)meta.egress_spec; ..."
           },
           "key" : [],
           "match_type" : "exact",
@@ -1600,10 +1815,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [6],
-          "actions" : ["MyIngress.srcRoute_finish"],
-          "base_default_next" : "tbl_srcRoute_nhop",
+          "actions" : ["my_link_monitor230"],
+          "base_default_next" : null,
           "next_tables" : {
-            "MyIngress.srcRoute_finish" : "tbl_srcRoute_nhop"
+            "my_link_monitor230" : null
           },
           "default_entry" : {
             "action_id" : 6,
@@ -1613,40 +1828,11 @@
           }
         },
         {
-          "name" : "tbl_srcRoute_nhop",
+          "name" : "MyIngress.doarp",
           "id" : 2,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 212,
-            "column" : 16,
-            "source_fragment" : "srcRoute_nhop()"
-          },
-          "key" : [],
-          "match_type" : "exact",
-          "type" : "simple",
-          "max_size" : 1024,
-          "with_counters" : false,
-          "support_timeout" : false,
-          "direct_meters" : null,
-          "action_ids" : [5],
-          "actions" : ["MyIngress.srcRoute_nhop"],
-          "base_default_next" : null,
-          "next_tables" : {
-            "MyIngress.srcRoute_nhop" : null
-          },
-          "default_entry" : {
-            "action_id" : 5,
-            "action_const" : true,
-            "action_data" : [],
-            "action_entry_const" : true
-          }
-        },
-        {
-          "name" : "MyIngress.doarp",
-          "id" : 3,
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 179,
+            "line" : 201,
             "column" : 10,
             "source_fragment" : "doarp"
           },
@@ -1670,7 +1856,7 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [7, 0],
+          "action_ids" : [5, 0],
           "actions" : ["MyIngress.arpreply", "NoAction"],
           "base_default_next" : null,
           "next_tables" : {
@@ -1686,10 +1872,10 @@
         },
         {
           "name" : "tbl_drop",
-          "id" : 4,
+          "id" : 3,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 216,
+            "line" : 235,
             "column" : 12,
             "source_fragment" : "drop()"
           },
@@ -1721,7 +1907,7 @@
           "id" : 0,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 205,
+            "line" : 227,
             "column" : 11,
             "source_fragment" : "hdr.ipv4.isValid()"
           },
@@ -1744,9 +1930,9 @@
           "id" : 1,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 207,
+            "line" : 229,
             "column" : 17,
-            "source_fragment" : "hdr.srcRoutes[0].isValid()"
+            "source_fragment" : "hdr.probe.isValid()"
           },
           "expression" : {
             "type" : "expression",
@@ -1755,45 +1941,19 @@
               "left" : null,
               "right" : {
                 "type" : "field",
-                "value" : ["srcRoutes[0]", "$valid$"]
+                "value" : ["probe", "$valid$"]
               }
             }
           },
-          "true_next" : "node_5",
-          "false_next" : "node_8"
+          "true_next" : "tbl_my_link_monitor230",
+          "false_next" : "node_6"
         },
         {
-          "name" : "node_5",
+          "name" : "node_6",
           "id" : 2,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 208,
-            "column" : 15,
-            "source_fragment" : "hdr.srcRoutes[0].bos == 1"
-          },
-          "expression" : {
-            "type" : "expression",
-            "value" : {
-              "op" : "==",
-              "left" : {
-                "type" : "field",
-                "value" : ["srcRoutes[0]", "bos"]
-              },
-              "right" : {
-                "type" : "hexstr",
-                "value" : "0x01"
-              }
-            }
-          },
-          "true_next" : "tbl_srcRoute_finish",
-          "false_next" : "tbl_srcRoute_nhop"
-        },
-        {
-          "name" : "node_8",
-          "id" : 3,
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 213,
+            "line" : 232,
             "column" : 17,
             "source_fragment" : "hdr.arp.isValid()"
           },
@@ -1818,20 +1978,20 @@
       "id" : 1,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 226,
+        "line" : 245,
         "column" : 8,
         "source_fragment" : "MyEgress"
       },
-      "init_table" : "MyEgress.switchId",
+      "init_table" : "MyEgress.switch_id",
       "tables" : [
         {
-          "name" : "MyEgress.switchId",
-          "id" : 5,
+          "name" : "MyEgress.switch_id",
+          "id" : 4,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 243,
+            "line" : 262,
             "column" : 10,
-            "source_fragment" : "switchId"
+            "source_fragment" : "switch_id"
           },
           "key" : [],
           "match_type" : "exact",
@@ -1840,26 +2000,26 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [9, 8],
+          "action_ids" : [8, 7],
           "actions" : ["MyEgress.setSwitchId", "NoAction"],
-          "base_default_next" : "tbl_my_link_monitor259",
+          "base_default_next" : "tbl_my_link_monitor278",
           "next_tables" : {
-            "MyEgress.setSwitchId" : "tbl_my_link_monitor259",
-            "NoAction" : "tbl_my_link_monitor259"
+            "MyEgress.setSwitchId" : "tbl_my_link_monitor278",
+            "NoAction" : "tbl_my_link_monitor278"
           },
           "default_entry" : {
-            "action_id" : 8,
+            "action_id" : 7,
             "action_const" : false,
             "action_data" : [],
             "action_entry_const" : false
           }
         },
         {
-          "name" : "tbl_my_link_monitor259",
-          "id" : 6,
+          "name" : "tbl_my_link_monitor278",
+          "id" : 5,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 259,
+            "line" : 278,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.read(byte_cnt, (bit<32>)standard_metadata.egress_port); ..."
           },
@@ -1870,25 +2030,54 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
-          "action_ids" : [12],
-          "actions" : ["my_link_monitor259"],
-          "base_default_next" : "node_15",
+          "action_ids" : [11],
+          "actions" : ["my_link_monitor278"],
+          "base_default_next" : "node_13",
           "next_tables" : {
-            "my_link_monitor259" : "node_15"
+            "my_link_monitor278" : "node_13"
           },
           "default_entry" : {
-            "action_id" : 12,
+            "action_id" : 11,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
           }
         },
         {
-          "name" : "tbl_my_link_monitor262",
+          "name" : "tbl_my_link_monitor281",
+          "id" : 6,
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 281,
+            "column" : 23,
+            "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [9],
+          "actions" : ["my_link_monitor281"],
+          "base_default_next" : "tbl_my_link_monitor282",
+          "next_tables" : {
+            "my_link_monitor281" : "tbl_my_link_monitor282"
+          },
+          "default_entry" : {
+            "action_id" : 9,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_my_link_monitor281_0",
           "id" : 7,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 262,
+            "line" : 281,
             "column" : 23,
             "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
           },
@@ -1900,10 +2089,10 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [10],
-          "actions" : ["my_link_monitor262"],
-          "base_default_next" : "tbl_my_link_monitor263",
+          "actions" : ["my_link_monitor281_0"],
+          "base_default_next" : "tbl_my_link_monitor282",
           "next_tables" : {
-            "my_link_monitor262" : "tbl_my_link_monitor263"
+            "my_link_monitor281_0" : "tbl_my_link_monitor282"
           },
           "default_entry" : {
             "action_id" : 10,
@@ -1913,40 +2102,11 @@
           }
         },
         {
-          "name" : "tbl_my_link_monitor262_0",
+          "name" : "tbl_my_link_monitor282",
           "id" : 8,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 262,
-            "column" : 23,
-            "source_fragment" : "(hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt"
-          },
-          "key" : [],
-          "match_type" : "exact",
-          "type" : "simple",
-          "max_size" : 1024,
-          "with_counters" : false,
-          "support_timeout" : false,
-          "direct_meters" : null,
-          "action_ids" : [11],
-          "actions" : ["my_link_monitor262_0"],
-          "base_default_next" : "tbl_my_link_monitor263",
-          "next_tables" : {
-            "my_link_monitor262_0" : "tbl_my_link_monitor263"
-          },
-          "default_entry" : {
-            "action_id" : 11,
-            "action_const" : true,
-            "action_data" : [],
-            "action_entry_const" : true
-          }
-        },
-        {
-          "name" : "tbl_my_link_monitor263",
-          "id" : 9,
-          "source_info" : {
-            "filename" : "my_link_monitor.p4",
-            "line" : 263,
+            "line" : 282,
             "column" : 8,
             "source_fragment" : "byte_cnt_reg.write((bit<32>)standard_metadata.egress_port, new_byte_cnt)"
           },
@@ -1957,11 +2117,40 @@
           "with_counters" : false,
           "support_timeout" : false,
           "direct_meters" : null,
+          "action_ids" : [16],
+          "actions" : ["my_link_monitor282"],
+          "base_default_next" : "node_17",
+          "next_tables" : {
+            "my_link_monitor282" : "node_17"
+          },
+          "default_entry" : {
+            "action_id" : 16,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_my_link_monitor285",
+          "id" : 9,
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 285,
+            "column" : 12,
+            "source_fragment" : "hdr.int_data.push_front(1); ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
           "action_ids" : [14],
-          "actions" : ["my_link_monitor263"],
+          "actions" : ["my_link_monitor285"],
           "base_default_next" : "node_19",
           "next_tables" : {
-            "my_link_monitor263" : "node_19"
+            "my_link_monitor285" : "node_19"
           },
           "default_entry" : {
             "action_id" : 14,
@@ -1971,13 +2160,42 @@
           }
         },
         {
-          "name" : "tbl_my_link_monitor266",
+          "name" : "tbl_my_link_monitor288",
           "id" : 10,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 266,
-            "column" : 12,
-            "source_fragment" : "hdr.intdata.push_front(1); ..."
+            "line" : 288,
+            "column" : 36,
+            "source_fragment" : "="
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [12],
+          "actions" : ["my_link_monitor288"],
+          "base_default_next" : "tbl_my_link_monitor293",
+          "next_tables" : {
+            "my_link_monitor288" : "tbl_my_link_monitor293"
+          },
+          "default_entry" : {
+            "action_id" : 12,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_my_link_monitor291",
+          "id" : 11,
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 291,
+            "column" : 36,
+            "source_fragment" : "="
           },
           "key" : [],
           "match_type" : "exact",
@@ -1987,13 +2205,42 @@
           "support_timeout" : false,
           "direct_meters" : null,
           "action_ids" : [13],
-          "actions" : ["my_link_monitor266"],
-          "base_default_next" : null,
+          "actions" : ["my_link_monitor291"],
+          "base_default_next" : "tbl_my_link_monitor293",
           "next_tables" : {
-            "my_link_monitor266" : null
+            "my_link_monitor291" : "tbl_my_link_monitor293"
           },
           "default_entry" : {
             "action_id" : 13,
+            "action_const" : true,
+            "action_data" : [],
+            "action_entry_const" : true
+          }
+        },
+        {
+          "name" : "tbl_my_link_monitor293",
+          "id" : 12,
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 293,
+            "column" : 38,
+            "source_fragment" : "= meta.switch_id; ..."
+          },
+          "key" : [],
+          "match_type" : "exact",
+          "type" : "simple",
+          "max_size" : 1024,
+          "with_counters" : false,
+          "support_timeout" : false,
+          "direct_meters" : null,
+          "action_ids" : [15],
+          "actions" : ["my_link_monitor293"],
+          "base_default_next" : null,
+          "next_tables" : {
+            "my_link_monitor293" : null
+          },
+          "default_entry" : {
+            "action_id" : 15,
             "action_const" : true,
             "action_data" : [],
             "action_entry_const" : true
@@ -2003,11 +2250,11 @@
       "action_profiles" : [],
       "conditionals" : [
         {
-          "name" : "node_15",
-          "id" : 4,
+          "name" : "node_13",
+          "id" : 3,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 262,
+            "line" : 281,
             "column" : 24,
             "source_fragment" : "hdr.ethernet.etherType == TYPE_PROBE"
           },
@@ -2021,58 +2268,61 @@
               },
               "right" : {
                 "type" : "hexstr",
-                "value" : "0x1234"
+                "value" : "0x0812"
               }
             }
           },
-          "true_next" : "tbl_my_link_monitor262",
-          "false_next" : "tbl_my_link_monitor262_0"
+          "true_next" : "tbl_my_link_monitor281",
+          "false_next" : "tbl_my_link_monitor281_0"
+        },
+        {
+          "name" : "node_17",
+          "id" : 4,
+          "source_info" : {
+            "filename" : "my_link_monitor.p4",
+            "line" : 284,
+            "column" : 12,
+            "source_fragment" : "hdr.probe.isValid()"
+          },
+          "expression" : {
+            "type" : "expression",
+            "value" : {
+              "op" : "d2b",
+              "left" : null,
+              "right" : {
+                "type" : "field",
+                "value" : ["probe", "$valid$"]
+              }
+            }
+          },
+          "false_next" : null,
+          "true_next" : "tbl_my_link_monitor285"
         },
         {
           "name" : "node_19",
           "id" : 5,
           "source_info" : {
             "filename" : "my_link_monitor.p4",
-            "line" : 265,
-            "column" : 12,
-            "source_fragment" : "hdr.ethernet.etherType == TYPE_PROBE || hdr.ethernet.etherType == TYPE_PROBE2"
+            "line" : 287,
+            "column" : 16,
+            "source_fragment" : "hdr.probe.hop_cnt == 1"
           },
           "expression" : {
             "type" : "expression",
             "value" : {
-              "op" : "or",
+              "op" : "==",
               "left" : {
-                "type" : "expression",
-                "value" : {
-                  "op" : "==",
-                  "left" : {
-                    "type" : "field",
-                    "value" : ["ethernet", "etherType"]
-                  },
-                  "right" : {
-                    "type" : "hexstr",
-                    "value" : "0x1234"
-                  }
-                }
+                "type" : "field",
+                "value" : ["probe", "hop_cnt"]
               },
               "right" : {
-                "type" : "expression",
-                "value" : {
-                  "op" : "==",
-                  "left" : {
-                    "type" : "field",
-                    "value" : ["ethernet", "etherType"]
-                  },
-                  "right" : {
-                    "type" : "hexstr",
-                    "value" : "0x1235"
-                  }
-                }
+                "type" : "hexstr",
+                "value" : "0x01"
               }
             }
           },
-          "false_next" : null,
-          "true_next" : "tbl_my_link_monitor266"
+          "true_next" : "tbl_my_link_monitor288",
+          "false_next" : "tbl_my_link_monitor291"
         }
       ]
     }
@@ -2083,7 +2333,7 @@
       "id" : 0,
       "source_info" : {
         "filename" : "my_link_monitor.p4",
-        "line" : 292,
+        "line" : 316,
         "column" : 8,
         "source_fragment" : "update_checksum( ..."
       },

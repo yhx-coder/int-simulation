@@ -4,8 +4,7 @@
 
 const bit<16> TYPE_IPV4  = 0x800;
 const bit<16> TYPE_ARP  = 0x806;
-const bit<16> TYPE_PROBE = 0x1234;
-const bit<16> TYPE_PROBE2 = 0x1235;
+const bit<16> TYPE_PROBE = 0x812;
 
 #define MAX_HOPS 5
 #define MAX_PORTS 16
@@ -16,7 +15,7 @@ const bit<16> TYPE_PROBE2 = 0x1235;
 
 typedef bit<48> macAddr_t;
 typedef bit<32> ip4Addr_t;
-typedef bit<11> switchID_t;
+typedef bit<10> switchID_t;
 typedef bit<48> time_t;
 
 header ethernet_t {
@@ -25,15 +24,21 @@ header ethernet_t {
     bit<16>   etherType;
 }
 
+// Top-level probe header, indicates how many hops this probe
+// packet has traversed so far.
+header probe_t {
+    bit<8> hop_cnt;
+}
+
 header srcRoute_t {
-    bit<1>    bos;
-    bit<7>   port;
+    bit<8>   port;
 }
 
 header int_data_t {
+    bit<1>    bos;
     switchID_t switch_id;   // 凑8的倍数
-    bit<9> ingress_port;    
-    bit<9> egress_port;     
+    bit<9> ingress_port;
+    bit<9> egress_port;
     bit<48> hop_latency;    // 在这一跳耽误的时间
     bit<19> deq_qdepth;
     bit<32> deq_timedelta;
@@ -71,16 +76,24 @@ header arp_t {
     bit<32> arpTpa;     /* target protocol address */
 }
 
+struct parser_metadata_t {
+    bit<8>  remaining;
+}
+
+
 struct metadata {
     switchID_t switch_id;
+    bit<8> egress_spec;
+    parser_metadata_t parser_metadata;
 }
 
 
 struct headers {
     ethernet_t              ethernet;
     arp_t                   arp;
+    probe_t                 probe;
+    int_data_t[MAX_HOPS]    int_data;
     srcRoute_t[MAX_HOPS]    srcRoutes;
-    int_data_t[MAX_HOPS]    intdata;
     ipv4_t                  ipv4;
 }
 
@@ -102,7 +115,7 @@ parser MyParser(packet_in packet,
         transition select(hdr.ethernet.etherType) {
             TYPE_IPV4: parse_ipv4;
             TYPE_ARP: parse_arp;
-            TYPE_PROBE: parse_srcRouting;
+            TYPE_PROBE: parse_probe;
             default: accept;
         }
     }
@@ -117,11 +130,30 @@ parser MyParser(packet_in packet,
         transition accept;
     }
 
-    state parse_srcRouting {
+     state parse_probe {
+            packet.extract(hdr.probe);
+            meta.parser_metadata.remaining = hdr.probe.hop_cnt + 1;
+            transition select(hdr.probe.hop_cnt) {
+                0: parse_srcRoutes;
+                default: parse_int_data;
+            }
+     }
+
+     state parse_int_data {
+             packet.extract(hdr.int_data.next);
+             transition select(hdr.int_data.last.bos) {
+                 1: parse_srcRoutes;
+                 default: parse_int_data;
+             }
+     }
+
+    state parse_srcRoutes {
         packet.extract(hdr.srcRoutes.next);
-        transition select(hdr.srcRoutes.last.bos) {
-            1: accept;
-            default: parse_srcRouting;
+        meta.parser_metadata.remaining = meta.parser_metadata.remaining - 1;
+        meta.egress_spec = hdr.srcRoutes.last.port;
+        transition select(meta.parser_metadata.remaining) {
+            0: accept;
+            default: parse_srcRoutes;
         }
     }
 }
@@ -152,16 +184,6 @@ control MyIngress(inout headers hdr,
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
         hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
-    }
-
-    action srcRoute_nhop() {
-        standard_metadata.egress_spec = (bit<9>)hdr.srcRoutes[0].port;
-        hdr.srcRoutes.pop_front(1);
-    }
-
-    // 不在最后将类型改回ipv4，sniff 就看不到首部了，只能看到负载，导致只能用原始socket接收，有点麻烦。
-    action srcRoute_finish() {
-        hdr.ethernet.etherType = TYPE_PROBE2;
     }
 
     action arpreply(bit<48>repmac) {
@@ -204,12 +226,9 @@ control MyIngress(inout headers hdr,
     apply{
         if(hdr.ipv4.isValid()){
             ipv4_lpm.apply();
-        }else if(hdr.srcRoutes[0].isValid()){
-            if(hdr.srcRoutes[0].bos == 1){
-                // 不在最后将类型改回ipv4，sniff 就看不到首部了，只能看到负载，导致只能用原始socket接收，有点麻烦。
-                srcRoute_finish();
-            }
-                srcRoute_nhop();
+        }else if(hdr.probe.isValid()){
+            standard_metadata.egress_spec = (bit<9>)meta.egress_spec;
+            hdr.probe.hop_cnt = hdr.probe.hop_cnt + 1;
         }else if(hdr.arp.isValid()){
              doarp.apply();
         }else{
@@ -240,7 +259,7 @@ control MyEgress(inout headers hdr,
         meta.switch_id = switch_id;
     }
 
-    table switchId {
+    table switch_id {
         actions = {
             setSwitchId;
             NoAction;
@@ -249,7 +268,7 @@ control MyEgress(inout headers hdr,
     }
 
     apply{
-        switchId.apply();
+        switch_id.apply();
 
         bit<32> byte_cnt;
         bit<32> new_byte_cnt;
@@ -262,22 +281,27 @@ control MyEgress(inout headers hdr,
         new_byte_cnt = (hdr.ethernet.etherType == TYPE_PROBE) ? 0 : byte_cnt;
         byte_cnt_reg.write((bit<32>)standard_metadata.egress_port, new_byte_cnt);
 
-        if (hdr.ethernet.etherType == TYPE_PROBE || hdr.ethernet.etherType == TYPE_PROBE2) {
-            hdr.intdata.push_front(1);
-            hdr.intdata[0].setValid();
-            hdr.intdata[0].setValid();
-            hdr.intdata[0].switch_id = meta.switch_id;
-            hdr.intdata[0].ingress_port = standard_metadata.ingress_port;
-            hdr.intdata[0].egress_port = standard_metadata.egress_port;
-            hdr.intdata[0].hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp;
-            hdr.intdata[0].deq_qdepth = standard_metadata.deq_qdepth;
-            hdr.intdata[0].deq_timedelta = standard_metadata.deq_timedelta;
-            hdr.intdata[0].byte_cnt = byte_cnt;
+        if (hdr.probe.isValid()) {
+            hdr.int_data.push_front(1);
+            hdr.int_data[0].setValid();
+            if (hdr.probe.hop_cnt == 1) {
+                hdr.int_data[0].bos = 1;
+            }
+            else {
+                hdr.int_data[0].bos = 0;
+            }
+            hdr.int_data[0].switch_id = meta.switch_id;
+            hdr.int_data[0].ingress_port = standard_metadata.ingress_port;
+            hdr.int_data[0].egress_port = standard_metadata.egress_port;
+            hdr.int_data[0].hop_latency = standard_metadata.egress_global_timestamp - standard_metadata.ingress_global_timestamp;
+            hdr.int_data[0].deq_qdepth = standard_metadata.deq_qdepth;
+            hdr.int_data[0].deq_timedelta = standard_metadata.deq_timedelta;
+            hdr.int_data[0].byte_cnt = byte_cnt;
             // read / update the last_time_reg
             last_time_reg.read(last_time, (bit<32>)standard_metadata.egress_port);
             last_time_reg.write((bit<32>)standard_metadata.egress_port, cur_time);
-            hdr.intdata[0].last_time = last_time;
-            hdr.intdata[0].cur_time = cur_time;
+            hdr.int_data[0].last_time = last_time;
+            hdr.int_data[0].cur_time = cur_time;
         }
     }
 
@@ -315,8 +339,9 @@ control MyDeparser(packet_out packet, in headers hdr) {
     apply {
         packet.emit(hdr.ethernet);
         packet.emit(hdr.arp);
+        packet.emit(hdr.probe);
+        packet.emit(hdr.int_data);
         packet.emit(hdr.srcRoutes);
-        packet.emit(hdr.intdata);
         packet.emit(hdr.ipv4);
     }
 }

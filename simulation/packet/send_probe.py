@@ -10,27 +10,12 @@ import struct
 from concurrent.futures import ThreadPoolExecutor
 
 from scapy.arch import get_if_hwaddr
-from scapy.interfaces import get_if_list
 from scapy.sendrecv import sendp
 
 import probe
 import socket
 
 from simulation.config.constants import Constants
-
-
-def get_if():
-    ifs = get_if_list()
-    iface = None  # "h1-eth0"
-    for i in ifs:
-        if "eth0" in i:
-            iface = i
-            break
-    if not iface:
-        print("Cannot find eth0 interface")
-        exit(1)
-    return iface
-
 
 def rcvControlMessage(controlPort):
     """
@@ -74,10 +59,9 @@ def sendProbe(portLists):
     for portList in portLists:
         packet = probe.genProbe(portList, srcMac=get_if_hwaddr(interface))
         # 内网网卡"h-eth0"
-        sendp(packet, iface=interface)
+        sendp(packet, iface="eth0")
 
 
 if __name__ == "__main__":
-    interface = get_if()
     pool = ThreadPoolExecutor(max_workers=2)
     rcvControlMessage(Constants.CONTROL_PORT)

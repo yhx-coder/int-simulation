@@ -1,6 +1,11 @@
 import sys
 sys.path.append("/home/sdn/Downloads/int/")
 
+from scapy.layers.l2 import Ether
+
+from simulation.packet.probe import Probe, SrcRoute
+
+
 from scapy.arch import get_if_hwaddr
 from scapy.interfaces import get_if_list
 from scapy.sendrecv import sendp
@@ -20,9 +25,10 @@ def get_if():
         exit(1)
     return iface
 
-portList = ["7","5","7"]
 interface = get_if()
-packet = probe.genProbe(portList, srcMac=get_if_hwaddr(interface))
+packet = Ether(dst='ff:ff:ff:ff:ff:ff', src=get_if_hwaddr('eth0')) / \
+                Probe(hop_cnt=0) / SrcRoute(port=1)/SrcRoute(port=2)/SrcRoute(port=3)
+
 # 内网网卡"h-eth0"
 for _ in range(1):
-    sendp(packet, iface=interface)
+    sendp(packet, iface="eth0")

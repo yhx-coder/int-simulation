@@ -74,7 +74,7 @@ class TelemetryController:
 
     def genSwitchIdTable(self):
         for switchId, switch in enumerate(self.switchList):
-            entry = {"table_name": "MyEgress.switchId", "action_name": "MyEgress.setSwitchId",
+            entry = {"table_name": "MyEgress.switch_id", "action_name": "MyEgress.setSwitchId",
                      "match_keys": [], "action_params": [str(switchId)]}
             switch.tables.append(entry)
 

@@ -52,9 +52,9 @@ tables {
 }
 tables {
   preamble {
-    id: 42591323
-    name: "MyEgress.switchId"
-    alias: "switchId"
+    id: 44887276
+    name: "MyEgress.switch_id"
+    alias: "switch_id"
   }
   action_refs {
     id: 27853540
@@ -98,20 +98,6 @@ actions {
 }
 actions {
   preamble {
-    id: 26904258
-    name: "MyIngress.srcRoute_nhop"
-    alias: "srcRoute_nhop"
-  }
-}
-actions {
-  preamble {
-    id: 18485362
-    name: "MyIngress.srcRoute_finish"
-    alias: "srcRoute_finish"
-  }
-}
-actions {
-  preamble {
     id: 28911074
     name: "MyIngress.arpreply"
     alias: "arpreply"
@@ -131,7 +117,7 @@ actions {
   params {
     id: 1
     name: "switch_id"
-    bitwidth: 11
+    bitwidth: 10
   }
 }
 registers {
