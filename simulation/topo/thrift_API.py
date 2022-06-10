@@ -1185,8 +1185,8 @@ class ThriftAPI(object):
             print("Could not add entry with handle {}".format(entry_handle))
             return entry_handle
 
-        print("Entry has been added with handle", entry_handle)
-        print()
+        # print("Entry has been added with handle", entry_handle)
+        # print()
         return entry_handle
 
     @handle_bad_input

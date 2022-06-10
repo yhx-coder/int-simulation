@@ -3,7 +3,7 @@
 # @date: 2022/5/23 11:00
 import os
 import sys
-
+import time
 
 sys.path.append("/home/sdn/Downloads/int/")
 
@@ -74,7 +74,7 @@ class TelemetryController:
 
     def genSwitchIdTable(self):
         for switchId, switch in enumerate(self.switchList):
-            entry = {"table_name": "MyEgress.switch_id", "action_name": "MyEgress.setSwitchId",
+            entry = {"table_name": "MyEgress.swid", "action_name": "MyEgress.set_swid",
                      "match_keys": [], "action_params": [str(switchId)]}
             switch.tables.append(entry)
 
@@ -147,6 +147,7 @@ class TelemetryController:
                 controlMessage = header + payload
                 tcp_socket.send(controlMessage)
 
+            time.sleep(10)
 
     def start(self):
         self.genSwitch()

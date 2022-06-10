@@ -52,12 +52,12 @@ tables {
 }
 tables {
   preamble {
-    id: 44887276
-    name: "MyEgress.switch_id"
-    alias: "switch_id"
+    id: 46829915
+    name: "MyEgress.swid"
+    alias: "swid"
   }
   action_refs {
-    id: 27853540
+    id: 27556166
   }
   action_refs {
     id: 21257015
@@ -110,13 +110,27 @@ actions {
 }
 actions {
   preamble {
-    id: 27853540
-    name: "MyEgress.setSwitchId"
-    alias: "setSwitchId"
+    id: 26904258
+    name: "MyIngress.srcRoute_nhop"
+    alias: "srcRoute_nhop"
+  }
+}
+actions {
+  preamble {
+    id: 18485362
+    name: "MyIngress.srcRoute_finish"
+    alias: "srcRoute_finish"
+  }
+}
+actions {
+  preamble {
+    id: 27556166
+    name: "MyEgress.set_swid"
+    alias: "set_swid"
   }
   params {
     id: 1
-    name: "switch_id"
+    name: "swid"
     bitwidth: 10
   }
 }

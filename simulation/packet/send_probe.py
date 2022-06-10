@@ -3,7 +3,6 @@
 # @date: 2022/5/20 14:36
 import sys
 
-
 sys.path.append("/home/sdn/Downloads/int/")
 import struct
 
@@ -17,6 +16,7 @@ import socket
 
 from simulation.config.constants import Constants
 
+
 def rcvControlMessage(controlPort):
     """
     控制端与 controlPort 端口建立 tcp。发送的控制消息格式为： 负载长度[[],[],[],...]
@@ -28,7 +28,7 @@ def rcvControlMessage(controlPort):
     dataBuffer = bytes()
 
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_socket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+    tcp_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tcp_socket.bind(("", controlPort))
     tcp_socket.listen(1)
     conn, addr = tcp_socket.accept()
@@ -49,6 +49,7 @@ def rcvControlMessage(controlPort):
                     break
                 payload = dataBuffer[headSize:headSize + payloadSize]
                 portLists = eval(payload)
+                print(portLists)
                 pool.submit(sendProbe, portLists)
 
                 # 处理一个包后，清理缓冲区
@@ -56,10 +57,11 @@ def rcvControlMessage(controlPort):
 
 
 def sendProbe(portLists):
+    interface = "eth0"
     for portList in portLists:
         packet = probe.genProbe(portList, srcMac=get_if_hwaddr(interface))
         # 内网网卡"h-eth0"
-        sendp(packet, iface="eth0")
+        sendp(packet, iface=interface)
 
 
 if __name__ == "__main__":
